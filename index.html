@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="theme-color" content="#0a0e27">
+  <meta name="theme-color" content="#0084ff">
   <title>ChatHub - Messenger</title>
   <link rel="manifest" href="data:application/json,{&quot;name&quot;:&quot;ChatHub&quot;,&quot;short_name&quot;:&quot;ChatHub&quot;,&quot;start_url&quot;:&quot;/&quot;,&quot;display&quot;:&quot;standalone&quot;}">
   <style>
@@ -29,47 +29,6 @@
       display: flex;
       height: 100vh;
       background: #fff;
-    }
-
-    /* ============ شاشة البداية ============ */
-    .splash-screen {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, #0084ff, #00b4d8);
-      z-index: 1000;
-    }
-
-    .splash-logo {
-      text-align: center;
-      animation: bounceIn 0.8s ease-out;
-    }
-
-    .splash-logo h1 {
-      font-size: 48px;
-      margin-bottom: 10px;
-      animation: fadeIn 1s ease-out;
-    }
-
-    .splash-logo p {
-      font-size: 16px;
-      color: rgba(255, 255, 255, 0.8);
-    }
-
-    @keyframes bounceIn {
-      0% { transform: scale(0); }
-      100% { transform: scale(1); }
-    }
-
-    @keyframes fadeIn {
-      0% { opacity: 0; }
-      100% { opacity: 1; }
-    }
-
-    .splash-screen.hidden {
-      display: none;
     }
 
     /* ============ الواجهة الرئيسية ============ */
@@ -544,16 +503,8 @@
 </head>
 <body>
   <div class="app-container">
-    <!-- شاشة البداية -->
-    <div class="splash-screen" id="splashScreen">
-      <div class="splash-logo">
-        <h1>💬 ChatHub</h1>
-        <p>جاري التحميل...</p>
-      </div>
-    </div>
-
     <!-- التطبيق الرئيسي -->
-    <div class="main-layout" id="mainLayout" style="display: none;">
+    <div class="main-layout" id="mainLayout">
       <!-- الشريط الجانبي -->
       <div class="sidebar">
         <div class="sidebar-header">
@@ -638,15 +589,6 @@
       } else {
         initializeData();
       }
-    }
-
-    // ============ عرض التطبيق ============
-    function showApp() {
-      setTimeout(() => {
-        document.getElementById('splashScreen').classList.add('hidden');
-        document.getElementById('mainLayout').style.display = 'flex';
-        renderConversations();
-      }, 1500);
     }
 
     // ============ رسم المحادثات ============
@@ -807,4 +749,47 @@
     function handleKeyPress(event) {
       if (event.key === 'Enter' && !event.shiftKey) {
         event.preventDefault();
- 
+        sendMessage();
+      }
+    }
+
+    // ============ Emojis ============
+    function toggleEmojiPicker() {
+      const picker = document.getElementById('emojiPicker');
+      picker.classList.toggle('show');
+    }
+
+    function insertEmoji(emoji) {
+      const input = document.getElementById('messageInput');
+      input.value += emoji;
+      input.focus();
+    }
+
+    // ============ البحث ============
+    function filterConversations() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const items = document.querySelectorAll('.conversation-item');
+
+      items.forEach(item => {
+        const name = item.querySelector('.conversation-name').textContent.toLowerCase();
+        item.style.display = name.includes(query) ? '' : 'none';
+      });
+    }
+
+    // ============ التهيئة ============
+    window.addEventListener('load', () => {
+      loadData();
+      renderConversations();
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.emoji-btn') && !e.target.closest('.emoji-picker')) {
+        if (document.getElementById('emojiPicker')) {
+          document.getElementById('emojiPicker').classList.remove('show');
+        }
+      }
+    });
+
+    // ============ دعم PWA ============
+    if ('serviceWorker' in navigator) {
+      navigator.ser

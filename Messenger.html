@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#0a0e27">
+  <title>ChatHub - Messenger</title>
+  <link rel="manifest" href="data:application/json,{&quot;name&quot;:&quot;ChatHub&quot;,&quot;short_name&quot;:&quot;ChatHub&quot;,&quot;start_url&quot;:&quot;/&quot;,&quot;display&quot;:&quot;standalone&quot;}">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      background: #fff;
+      color: #000;
+      overflow: hidden;
+    }
+
+    .app-container {
+      display: flex;
+      height: 100vh;
+      background: #fff;
+    }
+
+    /* ============ شاشة البداية ============ */
+    .splash-screen {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #0084ff, #00b4d8);
+      z-index: 1000;
+    }
+
+    .splash-logo {
+      text-align: center;
+      animation: bounceIn 0.8s ease-out;
+    }
+
+    .splash-logo h1 {
+      font-size: 48px;
+      margin-bottom: 10px;
+      animation: fadeIn 1s ease-out;
+    }
+
+    .splash-logo p {
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    @keyframes bounceIn {
+      0% { transform: scale(0); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+
+    .splash-screen.hidden {
+      display: none;
+    }
+
+    /* ============ الواجهة الرئيسية ============ */
+    .main-layout {
+      display: flex;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ============ الشريط الجانبي - قائمة المحادثات ============ */
+    .sidebar {
+      width: 360px;
+      background: #fff;
+      border-right: 1px solid #e5e5e5;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .sidebar-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid #e5e5e5;
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .header-top h1 {
+      font-size: 32px;
+      font-weight: 800;
+    }
+
+    .header-icons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .icon-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #f0f2f5;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      transition: all 0.2s;
+    }
+
+    .icon-btn:hover {
+      background: #e4e6eb;
+    }
+
+    .search-box {
+      position: relative;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 10px 16px 10px 36px;
+      border-radius: 50px;
+      border: none;
+      background: #f0f2f5;
+      font-size: 15px;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .search-box input:focus {
+      background: #e4e6eb;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #65676b;
+    }
+
+    .conversations-container {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .conversation-item {
+      padding: 8px 8px;
+      margin: 0 8px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: transparent;
+      border: none;
+      width: calc(100% - 16px);
+      text-align: right;
+      color: inherit;
+    }
+
+    .conversation-item:hover {
+      background: #f0f2f5;
+    }
+
+    .conversation-item.active {
+      background: #f0f2f5;
+    }
+
+    .avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0084ff, #00b4d8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .conversation-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .conversation-name {
+      font-weight: 500;
+      font-size: 15px;
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .conversation-preview {
+      font-size: 13px;
+      color: #65676b;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .timestamp {
+      font-size: 12px;
+      color: #65676b;
+      flex-shrink: 0;
+    }
+
+    /* ============ منطقة الدردشة ============ */
+    .chat-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+      position: relative;
+    }
+
+    .chat-container.empty {
+      align-items: center;
+      justify-content: center;
+    }
+
+    .empty-state {
+      text-align: center;
+      color: #65676b;
+    }
+
+    .empty-state-icon {
+      font-size: 60px;
+      margin-bottom: 16px;
+    }
+
+    .empty-state h2 {
+      font-size: 24px;
+      margin-bottom: 8px;
+      color: #000;
+    }
+
+    .empty-state p {
+      font-size: 15px;
+    }
+
+    /* ============ رأس الدردشة ============ */
+    .chat-header {
+      padding: 12px 20px;
+      border-bottom: 1px solid #e5e5e5;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fff;
+    }
+
+    .chat-header-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .chat-header-text h2 {
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .chat-header-text p {
+      font-size: 12px;
+      color: #65676b;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    /* ============ منطقة الرسائل ============ */
+    .messages-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .message {
+      display: flex;
+      gap: 8px;
+      animation: slideUp 0.3s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .message.own {
+      justify-content: flex-end;
+    }
+
+    .message-bubble {
+      max-width: 55%;
+      padding: 10px 14px;
+      border-radius: 18px;
+      font-size: 15px;
+      line-height: 1.4;
+      word-wrap: break-word;
+      word-break: break-word;
+    }
+
+    .message.other .message-bubble {
+      background: #e4e6eb;
+      color: #000;
+    }
+
+    .message.own .message-bubble {
+      background: #0084ff;
+      color: #fff;
+      border-bottom-right-radius: 4px;
+    }
+
+    .message-time {
+      font-size: 12px;
+      color: #65676b;
+      margin-top: 4px;
+      text-align: center;
+    }
+
+    /* ============ منطقة الإدخال ============ */
+    .input-area {
+      padding: 12px 20px 20px;
+      background: #fff;
+      border-top: 1px solid #e5e5e5;
+    }
+
+    .input-wrapper {
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+    }
+
+    .input-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .action-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #f0f2f5;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      transition: all 0.2s;
+    }
+
+    .action-btn:hover {
+      background: #e4e6eb;
+    }
+
+    .message-input-wrapper {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      background: #f0f2f5;
+      border-radius: 50px;
+      padding: 8px 16px;
+      gap: 8px;
+    }
+
+    .message-input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      font-size: 15px;
+      outline: none;
+      resize: none;
+      max-height: 100px;
+      font-family: inherit;
+    }
+
+    .message-input::placeholder {
+      color: #65676b;
+    }
+
+    .emoji-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 20px;
+      padding: 0;
+      transition: all 0.2s;
+    }
+
+    .emoji-btn:hover {
+      transform: scale(1.2);
+    }
+
+    .send-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #0084ff;
+      border: none;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      transition: all 0.2s;
+    }
+
+    .send-btn:hover {
+      background: #0073e6;
+    }
+
+    .send-btn:active {
+      transform: scale(0.95);
+    }
+
+    /* ============ Emoji Picker ============ */
+    .emoji-picker {
+      display: none;
+      position: absolute;
+      bottom: 80px;
+      left: 20px;
+      background: white;
+      border: 1px solid #e5e5e5;
+      border-radius: 12px;
+      padding: 10px;
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 5px;
+      z-index: 100;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .emoji-picker.show {
+      display: grid;
+    }
+
+    .emoji-item {
+      cursor: pointer;
+      font-size: 28px;
+      padding: 8px;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+
+    .emoji-item:hover {
+      background: #f0f2f5;
+      transform: scale(1.2);
+    }
+
+    /* ============ تصميم جوال ============ */
+    @media (max-width: 768px) {
+      .app-container {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid #e5e5e5;
+        max-height: 35%;
+      }
+
+      .chat-container {
+        height: 65%;
+      }
+
+      .sidebar-header {
+        padding: 12px 16px;
+      }
+
+      .header-top h1 {
+        font-size: 24px;
+      }
+
+      .message-bubble {
+        max-width: 70%;
+      }
+
+      .conversations-container {
+        max-height: 200px;
+      }
+
+      .emoji-picker {
+        left: 10px;
+        right: 10px;
+      }
+    }
+
+    /* ============ Scrollbar ============ */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #ccc;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #999;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- شاشة البداية -->
+    <div class="splash-screen" id="splashScreen">
+      <div class="splash-logo">
+        <h1>💬 ChatHub</h1>
+        <p>جاري التحميل...</p>
+      </div>
+    </div>
+
+    <!-- التطبيق الرئيسي -->
+    <div class="main-layout" id="mainLayout" style="display: none;">
+      <!-- الشريط الجانبي -->
+      <div class="sidebar">
+        <div class="sidebar-header">
+          <div class="header-top">
+            <h1>الرسائل</h1>
+            <div class="header-icons">
+              <button class="icon-btn" onclick="alert('إضافة محادثة جديدة')">➕</button>
+              <button class="icon-btn" onclick="alert('المزيد من الخيارات')">⋮</button>
+            </div>
+          </div>
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" placeholder="ابحث عن محادثة..." onkeyup="filterConversations()">
+          </div>
+        </div>
+
+        <div class="conversations-container" id="conversationsList">
+          <!-- المحادثات هنا -->
+        </div>
+      </div>
+
+      <!-- منطقة الدردشة -->
+      <div class="chat-container empty" id="chatContainer">
+        <div class="empty-state">
+          <div class="empty-state-icon">💬</div>
+          <h2>اختر محادثة</h2>
+          <p>اختر محادثة من اليسار لبدء الرسالة</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ============ متغيرات عامة ============
+    let conversations = {};
+    let currentConversation = null;
+    let currentUser = { name: 'أنت', id: 'user_me' };
+
+    // ============ البيانات الوهمية ============
+    function initializeData() {
+      conversations = {
+        'conv_1': {
+          id: 'conv_1',
+          name: 'أحمد محمد',
+          avatar: 'أ',
+          messages: [
+            { id: 1, sender: 'other', text: 'السلام عليكم! كيف حالك؟', time: '09:30' },
+            { id: 2, sender: 'me', text: 'وعليكم السلام! تمام الحمد لله 👋', time: '09:31' },
+            { id: 3, sender: 'other', text: 'شو أخبارك؟', time: '09:32' },
+            { id: 4, sender: 'me', text: 'كل التمام، والحمد لله! كيفك أنت؟', time: '09:33' }
+          ]
+        },
+        'conv_2': {
+          id: 'conv_2',
+          name: 'فاطمة علي',
+          avatar: 'ف',
+          messages: [
+            { id: 1, sender: 'other', text: 'هلا! وين رايح؟', time: '10:15' },
+            { id: 2, sender: 'me', text: 'بروح الجامعة', time: '10:16' },
+            { id: 3, sender: 'other', text: 'تمام، نتكلم بعدين 👍', time: '10:17' }
+          ]
+        },
+        'conv_3': {
+          id: 'conv_3',
+          name: 'سارة حسين',
+          avatar: 'س',
+          messages: [
+            { id: 1, sender: 'me', text: 'شنو الأخبار؟', time: '08:00' },
+            { id: 2, sender: 'other', text: 'تمام الحمد لله ✨', time: '08:05' }
+          ]
+        }
+      };
+
+      localStorage.setItem('chathub_conversations', JSON.stringify(conversations));
+    }
+
+    // ============ تحميل البيانات ============
+    function loadData() {
+      const saved = localStorage.getItem('chathub_conversations');
+      if (saved) {
+        conversations = JSON.parse(saved);
+      } else {
+        initializeData();
+      }
+    }
+
+    // ============ عرض التطبيق ============
+    function showApp() {
+      setTimeout(() => {
+        document.getElementById('splashScreen').classList.add('hidden');
+        document.getElementById('mainLayout').style.display = 'flex';
+        renderConversations();
+      }, 1500);
+    }
+
+    // ============ رسم المحادثات ============
+    function renderConversations() {
+      const list = document.getElementById('conversationsList');
+      list.innerHTML = '';
+
+      for (let id in conversations) {
+        const conv = conversations[id];
+        const lastMsg = conv.messages[conv.messages.length - 1];
+        
+        const item = document.createElement('button');
+        item.className = 'conversation-item' + (currentConversation === id ? ' active' : '');
+        item.onclick = () => openConversation(id);
+        
+        item.innerHTML = `
+          <div class="avatar">${conv.avatar}</div>
+          <div class="conversation-info">
+            <div class="conversation-name">${conv.name}</div>
+            <div class="conversation-preview">${lastMsg.text}</div>
+          </div>
+          <div class="timestamp">${lastMsg.time}</div>
+        `;
+        
+        list.appendChild(item);
+      }
+    }
+
+    // ============ فتح محادثة ============
+    function openConversation(id) {
+      currentConversation = id;
+      const conv = conversations[id];
+      
+      const chatContainer = document.getElementById('chatContainer');
+      chatContainer.classList.remove('empty');
+      chatContainer.innerHTML = `
+        <div class="chat-header">
+          <div class="chat-header-info">
+            <div class="avatar" style="width: 40px; height: 40px; font-size: 16px;">${conv.avatar}</div>
+            <div class="chat-header-text">
+              <h2>${conv.name}</h2>
+              <p>نشط الآن</p>
+            </div>
+          </div>
+          <div class="header-actions">
+            <button class="icon-btn">☎️</button>
+            <button class="icon-btn">📹</button>
+            <button class="icon-btn">ⓘ</button>
+          </div>
+        </div>
+
+        <div class="messages-area" id="messagesArea">
+          <!-- الرسائل هنا -->
+        </div>
+
+        <div class="input-area">
+          <div class="input-wrapper">
+            <div class="input-actions">
+              <button class="action-btn" onclick="alert('إرسال صورة')">🖼️</button>
+              <button class="action-btn" onclick="toggleEmojiPicker()">😊</button>
+            </div>
+            <div class="message-input-wrapper">
+              <input type="text" class="message-input" id="messageInput" placeholder="Aa" onkeypress="handleKeyPress(event)">
+              <button class="send-btn" onclick="sendMessage()">➤</button>
+            </div>
+          </div>
+          <div class="emoji-picker" id="emojiPicker">
+            <span class="emoji-item" onclick="insertEmoji('😀')">😀</span>
+            <span class="emoji-item" onclick="insertEmoji('😂')">😂</span>
+            <span class="emoji-item" onclick="insertEmoji('😍')">😍</span>
+            <span class="emoji-item" onclick="insertEmoji('🤔')">🤔</span>
+            <span class="emoji-item" onclick="insertEmoji('👍')">👍</span>
+            <span class="emoji-item" onclick="insertEmoji('❤️')">❤️</span>
+            <span class="emoji-item" onclick="insertEmoji('🔥')">🔥</span>
+            <span class="emoji-item" onclick="insertEmoji('✨')">✨</span>
+            <span class="emoji-item" onclick="insertEmoji('🎉')">🎉</span>
+            <span class="emoji-item" onclick="insertEmoji('💯')">💯</span>
+            <span class="emoji-item" onclick="insertEmoji('👋')">👋</span>
+            <span class="emoji-item" onclick="insertEmoji('😴')">😴</span>
+          </div>
+        </div>
+      `;
+
+      renderMessages();
+      renderConversations();
+      document.getElementById('messageInput').focus();
+    }
+
+    // ============ رسم الرسائل ============
+    function renderMessages() {
+      const conv = conversations[currentConversation];
+      const messagesArea = document.getElementById('messagesArea');
+      messagesArea.innerHTML = '';
+
+      conv.messages.forEach(msg => {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'message ' + (msg.sender === 'me' ? 'own' : 'other');
+        
+        messageDiv.innerHTML = `
+          <div class="message-bubble">${msg.text}</div>
+          <div class="message-time">${msg.time}</div>
+        `;
+        
+        messagesArea.appendChild(messageDiv);
+      });
+
+      messagesArea.scrollTop = messagesArea.scrollHeight;
+    }
+
+    // ============ إرسال رسالة ============
+    function sendMessage() {
+      const input = document.getElementById('messageInput');
+      const text = input.value.trim();
+
+      if (!text || !currentConversation) return;
+
+      const now = new Date();
+      const time = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+
+      conversations[currentConversation].messages.push({
+        id: Date.now(),
+        sender: 'me',
+        text: text,
+        time: time
+      });
+
+      input.value = '';
+      localStorage.setItem('chathub_conversations', JSON.stringify(conversations));
+      
+      renderMessages();
+      renderConversations();
+
+      // محاكاة الرد التلقائي
+      setTimeout(() => {
+        const responses = [
+          'شنو الأخبار؟ 👋',
+          'تمام! 😊',
+          'أيوه أيوه 👍',
+          'حلو! 🔥',
+          'شكراً لك ❤️',
+          'عاشت يداك ✨'
+        ];
+        const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+        
+        conversations[currentConversation].messages.push({
+          id: Date.now(),
+          sender: 'other',
+          text: randomResponse,
+          time: new Date().getHours() + ':' + String(new Date().getMinutes()).padStart(2, '0')
+        });
+
+        localStorage.setItem('chathub_conversations', JSON.stringify(conversations));
+        renderMessages();
+        renderConversations();
+      }, 1000);
+    }
+
+    function handleKeyPress(event) {
+      if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+ 

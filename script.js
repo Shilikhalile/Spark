@@ -9,21 +9,15 @@ document.addEventListener("DOMContentLoaded", () => {
        ELEMENTS
     ===================================================== */
 
-    const pages = {
-        home: document.getElementById("homePage"),
-        explore: document.getElementById("explorePage"),
-        notifications: document.getElementById("notificationsPage"),
-        messages: document.getElementById("messagesPage"),
-        friends: document.getElementById("friendsPage"),
-        saved: document.getElementById("savedPage")
-    };
-
+    const pages = document.querySelectorAll(".page");
     const navItems = document.querySelectorAll(".nav-item");
     const mobileNavItems = document.querySelectorAll(".mobile-nav-item");
 
+    const sidebar = document.getElementById("sidebar");
+    const mobileMenuBtn = document.getElementById("mobileMenuBtn");
+
     const postModal = document.getElementById("postModal");
     const closePostModal = document.getElementById("closePostModal");
-
     const openCreatePost = document.getElementById("openCreatePost");
     const sideCreatePost = document.getElementById("sideCreatePost");
     const mobileCreatePost = document.getElementById("mobileCreatePost");
@@ -44,83 +38,63 @@ document.addEventListener("DOMContentLoaded", () => {
     const liveBtn = document.getElementById("liveBtn");
 
     const themeBtn = document.getElementById("themeBtn");
+    const darkModeSwitch = document.getElementById("darkModeSwitch");
 
-    const notificationBtn =
-        document.getElementById("notificationBtn");
+    const notificationBtn = document.getElementById("notificationBtn");
+    const notificationPanel = document.getElementById("notificationPanel");
+    const closeNotificationPanel = document.getElementById("closeNotificationPanel");
 
-    const notificationPanel =
-        document.getElementById("notificationPanel");
+    const markNotifications = document.getElementById("markNotifications");
 
-    const markNotifications =
-        document.getElementById("markNotifications");
+    const globalSearch = document.getElementById("globalSearch");
+    const exploreSearch = document.getElementById("exploreSearch");
 
-    const globalSearch =
-        document.getElementById("globalSearch");
+    const feed = document.getElementById("feed");
 
-    const exploreSearch =
-        document.getElementById("exploreSearch");
+    const toast = document.getElementById("toast");
+    const toastText = document.getElementById("toastText");
+    const toastIcon = document.getElementById("toastIcon");
 
-    const feed =
-        document.getElementById("feed");
-
-    const toast =
-        document.getElementById("toast");
-
-    const toastText =
-        document.getElementById("toastText");
-
-    const toastIcon =
-        document.getElementById("toastIcon");
-
+    const viewAllStories = document.getElementById("viewAllStories");
 
     /* =====================================================
        PAGE NAVIGATION
     ===================================================== */
 
-    function openPage(pageName) {
+    function openPage(pageId) {
 
-        Object.keys(pages).forEach(page => {
-
-            if (pages[page]) {
-                pages[page].classList.remove("active-page");
-            }
-
+        pages.forEach(page => {
+            page.classList.remove("active");
         });
 
-        if (pages[pageName]) {
-            pages[pageName].classList.add("active-page");
+        const targetPage = document.getElementById(pageId);
+
+        if (targetPage) {
+            targetPage.classList.add("active");
         }
 
-
         navItems.forEach(item => {
-
             item.classList.toggle(
                 "active",
-                item.dataset.page === pageName
+                item.dataset.page === pageId
             );
-
         });
-
 
         mobileNavItems.forEach(item => {
-
-            if (item.dataset.page) {
-
-                item.classList.toggle(
-                    "active",
-                    item.dataset.page === pageName
-                );
-
-            }
-
+            item.classList.toggle(
+                "active",
+                item.dataset.page === pageId
+            );
         });
-
 
         window.scrollTo({
             top: 0,
             behavior: "smooth"
         });
 
+        if (sidebar) {
+            sidebar.classList.remove("open");
+        }
     }
 
 
@@ -128,10 +102,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         item.addEventListener("click", () => {
 
-            const page = item.dataset.page;
+            const pageId = item.dataset.page;
 
-            if (page) {
-                openPage(page);
+            if (pageId) {
+                openPage(pageId);
             }
 
         });
@@ -143,10 +117,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         item.addEventListener("click", () => {
 
-            const page = item.dataset.page;
+            const pageId = item.dataset.page;
 
-            if (page) {
-                openPage(page);
+            if (pageId) {
+                openPage(pageId);
             }
 
         });
@@ -155,7 +129,40 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       CREATE POST MODAL
+       MOBILE SIDEBAR
+    ===================================================== */
+
+    if (mobileMenuBtn) {
+
+        mobileMenuBtn.addEventListener("click", () => {
+
+            sidebar.classList.toggle("open");
+
+        });
+
+    }
+
+
+    document.addEventListener("click", event => {
+
+        if (!sidebar) return;
+
+        if (
+            window.innerWidth <= 800 &&
+            sidebar.classList.contains("open") &&
+            !sidebar.contains(event.target) &&
+            !mobileMenuBtn.contains(event.target)
+        ) {
+
+            sidebar.classList.remove("open");
+
+        }
+
+    });
+
+
+    /* =====================================================
+       POST MODAL
     ===================================================== */
 
     function openPostModal() {
@@ -209,7 +216,7 @@ document.addEventListener("DOMContentLoaded", () => {
         createStory.addEventListener("click", () => {
 
             showToast(
-                "إضافة Story جديدة قريباً",
+                "ميزة القصص ستتوفر قريباً",
                 "📸"
             );
 
@@ -228,184 +235,149 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    if (postModal) {
+    const modalOverlay = document.querySelector(
+        ".modal-overlay"
+    );
 
-        postModal.addEventListener(
+    if (modalOverlay) {
+
+        modalOverlay.addEventListener(
             "click",
-            event => {
-
-                if (
-                    event.target === postModal
-                ) {
-                    closeModal();
-                }
-
-            }
+            closeModal
         );
 
     }
 
 
-    document.addEventListener(
-        "keydown",
-        event => {
+    document.addEventListener("keydown", event => {
 
-            if (event.key === "Escape") {
+        if (event.key === "Escape") {
 
+            if (postModal.classList.contains("show")) {
                 closeModal();
+            }
 
-                notificationPanel?.classList.remove(
-                    "show"
-                );
-
+            if (
+                notificationPanel &&
+                notificationPanel.classList.contains("show")
+            ) {
+                notificationPanel.classList.remove("show");
             }
 
         }
-    );
+
+    });
 
 
     /* =====================================================
        IMAGE UPLOAD
     ===================================================== */
 
-    if (modalPhotoBtn && imageInput) {
+    if (modalPhotoBtn) {
 
-        modalPhotoBtn.addEventListener(
-            "click",
-            () => {
+        modalPhotoBtn.addEventListener("click", () => {
 
-                imageInput.click();
+            imageInput.click();
 
-            }
-        );
+        });
 
     }
 
 
-    if (photoPostBtn && imageInput) {
+    if (photoPostBtn) {
 
-        photoPostBtn.addEventListener(
-            "click",
-            () => {
+        photoPostBtn.addEventListener("click", () => {
 
-                openPostModal();
+            openPostModal();
 
-                setTimeout(() => {
-                    imageInput.click();
-                }, 150);
+            setTimeout(() => {
+                imageInput.click();
+            }, 150);
 
-            }
-        );
+        });
 
     }
 
 
     if (imageInput) {
 
-        imageInput.addEventListener(
-            "change",
-            event => {
+        imageInput.addEventListener("change", event => {
 
-                const file =
-                    event.target.files[0];
+            const file = event.target.files[0];
 
-                if (!file) return;
+            if (!file) return;
 
-                if (!file.type.startsWith("image/")) {
+            const reader = new FileReader();
 
-                    showToast(
-                        "اختار صورة فقط",
-                        "⚠️"
-                    );
+            reader.onload = e => {
 
-                    return;
-                }
+                selectedImage.innerHTML = `
+                    <img
+                        src="${e.target.result}"
+                        alt="الصورة المختارة"
+                    >
+                `;
 
+                selectedImage.style.display = "block";
 
-                const reader =
-                    new FileReader();
+            };
 
+            reader.readAsDataURL(file);
 
-                reader.onload = function(e) {
-
-                    selectedImage.style.backgroundImage =
-                        `url("${e.target.result}")`;
-
-                    selectedImage.classList.add(
-                        "show"
-                    );
-
-                    selectedImage.dataset.image =
-                        e.target.result;
-
-                };
-
-
-                reader.readAsDataURL(file);
-
-            }
-        );
+        });
 
     }
 
 
     /* =====================================================
-       FEELING BUTTON
+       FEELING
     ===================================================== */
 
-    if (feelingBtn) {
+    if (modalFeelingBtn) {
 
-        feelingBtn.addEventListener(
-            "click",
-            () => {
+        modalFeelingBtn.addEventListener("click", () => {
 
-                openPostModal();
+            const feelings = [
+                "😊 سعيد",
+                "❤️ أحب",
+                "🔥 متحمس",
+                "😎 رائع",
+                "🤔 أفكر",
+                "🎉 أحتفل"
+            ];
 
-                setTimeout(() => {
+            const feeling =
+                feelings[
+                    Math.floor(
+                        Math.random() * feelings.length
+                    )
+                ];
 
-                    postText.value =
-                        "أشعر اليوم بـ 😊";
+            postText.value +=
+                postText.value
+                    ? ` ${feeling}`
+                    : feeling;
 
-                    postText.focus();
+            postText.focus();
 
-                }, 100);
-
-            }
-        );
+        });
 
     }
 
 
-    if (modalFeelingBtn) {
+    if (feelingBtn) {
 
-        modalFeelingBtn.addEventListener(
-            "click",
-            () => {
+        feelingBtn.addEventListener("click", () => {
 
-                const feelings = [
-                    "😊 سعيد",
-                    "🔥 متحمس",
-                    "💪 قوي",
-                    "🚀 متفائل",
-                    "❤️ ممتن",
-                    "😎 رائع"
-                ];
+            openPostModal();
 
-                const randomFeeling =
-                    feelings[
-                        Math.floor(
-                            Math.random() *
-                            feelings.length
-                        )
-                    ];
+            setTimeout(() => {
 
-                postText.value =
-                    `أشعر اليوم بـ ${randomFeeling}`;
+                modalFeelingBtn.click();
 
-                postText.focus();
+            }, 100);
 
-            }
-        );
+        });
 
     }
 
@@ -416,17 +388,36 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (modalLocationBtn) {
 
-        modalLocationBtn.addEventListener(
-            "click",
-            () => {
+        modalLocationBtn.addEventListener("click", () => {
 
-                postText.value +=
-                    " 📍 تونس";
+            const locationText = "📍 تونس";
 
-                postText.focus();
+            postText.value +=
+                postText.value
+                    ? `\n${locationText}`
+                    : locationText;
 
-            }
-        );
+            postText.focus();
+
+        });
+
+    }
+
+
+    /* =====================================================
+       LIVE
+    ===================================================== */
+
+    if (liveBtn) {
+
+        liveBtn.addEventListener("click", () => {
+
+            showToast(
+                "البث المباشر سيكون متاحاً قريباً 🔴",
+                "🔴"
+            );
+
+        });
 
     }
 
@@ -447,156 +438,116 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function publishNewPost() {
 
-        const text =
-            postText.value.trim();
+        const text = postText.value.trim();
 
-        const image =
-            selectedImage.dataset.image || "";
+        const imageHTML =
+            selectedImage.innerHTML.trim();
 
-
-        if (!text && !image) {
+        if (!text && !imageHTML) {
 
             showToast(
-                "اكتب حاجة قبل ما تنشر",
+                "اكتب شيئاً قبل النشر",
                 "⚠️"
             );
 
-            postText.focus();
-
             return;
-
         }
 
 
-        const post =
-            document.createElement("article");
+        const post = document.createElement("article");
 
         post.className = "post-card";
-
-        post.dataset.postId =
-            Date.now();
-
-
-        let imageHTML = "";
-
-        if (image) {
-
-            imageHTML = `
-                <div
-                    class="user-uploaded-image"
-                    style="
-                        background-image:url('${image}');
-                    "
-                ></div>
-            `;
-
-        }
 
 
         post.innerHTML = `
 
             <div class="post-header">
 
-                <div class="post-user">
+                <div class="post-author">
 
-                    <div class="avatar">
+                    <div class="post-avatar">
                         K
                     </div>
 
-                    <div class="post-user-info">
-
-                        <strong>
-                            Khalil Shili
-                        </strong>
-
-                        <span>
-                            الآن · 🌎
-                        </span>
-
+                    <div>
+                        <h3>كـ Khalil</h3>
+                        <span>الآن · 🌍</span>
                     </div>
 
                 </div>
 
-                <button class="post-menu">
-                    •••
+                <button class="post-more">
+                    ⋮
                 </button>
 
             </div>
 
 
-            ${
-                text
-                ?
-                `
-                <div class="post-content">
-                    <p>${escapeHTML(text)}</p>
-                </div>
-                `
-                :
-                ""
-            }
+            <div class="post-content">
 
+                ${
+                    text
+                        ? `<p>${escapeHTML(text).replace(/\n/g, "<br>")}</p>`
+                        : ""
+                }
 
-            ${imageHTML}
+                ${
+                    imageHTML
+                        ? `
+                            <div class="new-post-image">
+                                ${imageHTML}
+                            </div>
+                        `
+                        : ""
+                }
+
+            </div>
 
 
             <div class="post-stats">
 
-                <span class="likes-number">
-                    ❤️ 0 إعجاب
-                </span>
+                <span>❤️ 0 إعجاب</span>
 
-                <span>
-                    0 تعليق · 0 مشاركة
-                </span>
+                <span>0 تعليق</span>
 
             </div>
 
 
-            <div class="post-buttons">
+            <div class="post-actions">
 
-                <button
-                    class="post-btn like-btn"
-                >
+                <button class="post-action like-btn">
                     ♡
                     <span>إعجاب</span>
                 </button>
 
-                <button
-                    class="post-btn comment-btn"
-                >
+                <button class="post-action">
                     💬
                     <span>تعليق</span>
                 </button>
 
-                <button
-                    class="post-btn share-btn"
-                >
-                    ↗
+                <button class="post-action">
+                    ↗️
                     <span>مشاركة</span>
+                </button>
+
+                <button class="post-action save-btn">
+                    🔖
+                    <span>حفظ</span>
                 </button>
 
             </div>
 
 
-            <div class="comments-area">
+            <div class="comment-box">
 
-                <div class="comment-input">
-
-                    <div class="avatar avatar-tiny">
-                        K
-                    </div>
-
-                    <input
-                        type="text"
-                        placeholder="اكتب تعليق..."
-                    >
-
-                    <button>
-                        ➤
-                    </button>
-
+                <div class="comment-avatar">
+                    K
                 </div>
+
+                <input
+                    type="text"
+                    placeholder="اكتب تعليقاً..."
+                >
 
             </div>
 
@@ -606,38 +557,40 @@ document.addEventListener("DOMContentLoaded", () => {
         feed.prepend(post);
 
 
-        attachPostEvents(post);
-
-
-        savePostLocally({
-            id: post.dataset.postId,
-            text,
-            image,
-            time: new Date().toISOString()
-        });
+        closeModal();
 
 
         postText.value = "";
 
-        selectedImage.style.backgroundImage =
-            "";
+        selectedImage.innerHTML = "";
 
-        selectedImage.classList.remove(
-            "show"
-        );
-
-        delete selectedImage.dataset.image;
+        selectedImage.style.display = "none";
 
         imageInput.value = "";
-
-
-        closeModal();
 
 
         showToast(
             "تم نشر المنشور بنجاح 🎉",
             "✓"
         );
+
+
+        attachPostEvents(post);
+
+    }
+
+
+    /* =====================================================
+       ESCAPE HTML
+    ===================================================== */
+
+    function escapeHTML(text) {
+
+        const div = document.createElement("div");
+
+        div.textContent = text;
+
+        return div.innerHTML;
 
     }
 
@@ -648,97 +601,45 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function attachPostEvents(post) {
 
-        const likeBtn =
+        const likeButton =
             post.querySelector(".like-btn");
 
-        const commentBtn =
-            post.querySelector(".comment-btn");
-
-        const shareBtn =
-            post.querySelector(".share-btn");
-
-        const commentArea =
-            post.querySelector(".comments-area");
+        const saveButton =
+            post.querySelector(".save-btn");
 
         const commentInput =
-            post.querySelector(
-                ".comment-input input"
-            );
-
-        const commentSend =
-            post.querySelector(
-                ".comment-input button"
-            );
+            post.querySelector(".comment-box input");
 
 
-        /* LIKE */
+        if (likeButton) {
 
-        if (likeBtn) {
-
-            likeBtn.addEventListener(
+            likeButton.addEventListener(
                 "click",
                 () => {
 
-                    const isLiked =
-                        likeBtn.classList.toggle(
-                            "liked"
+                    likeButton.classList.toggle("liked");
+
+                    const icon =
+                        likeButton.firstChild;
+
+                    if (
+                        likeButton.classList.contains("liked")
+                    ) {
+
+                        likeButton.innerHTML =
+                            `♥ <span>إعجاب</span>`;
+
+                        showToast(
+                            "تم الإعجاب بالمنشور ❤️",
+                            "♥"
                         );
-
-
-                    const stats =
-                        post.querySelector(
-                            ".likes-number"
-                        );
-
-
-                    if (!stats) return;
-
-
-                    const currentText =
-                        stats.textContent;
-
-                    const match =
-                        currentText.match(
-                            /\d+/
-                        );
-
-                    let count =
-                        match
-                        ?
-                        Number(match[0])
-                        :
-                        0;
-
-
-                    if (isLiked) {
-
-                        count++;
-
-                        likeBtn.innerHTML =
-                            `
-                            ❤️
-                            <span>إعجاب</span>
-                            `;
 
                     } else {
 
-                        count =
-                            Math.max(
-                                0,
-                                count - 1
-                            );
-
-                        likeBtn.innerHTML =
-                            `
-                            ♡
-                            <span>إعجاب</span>
-                            `;
+                        likeButton.innerHTML =
+                            `♡ <span>إعجاب</span>`;
 
                     }
-
-
-                    stats.textContent =
-                        `❤️ ${count} إعجاب`;
 
                 }
             );
@@ -746,26 +647,33 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        /* COMMENT */
+        if (saveButton) {
 
-        if (commentBtn && commentArea) {
-
-            commentBtn.addEventListener(
+            saveButton.addEventListener(
                 "click",
                 () => {
 
-                    commentArea.classList.toggle(
-                        "show"
+                    saveButton.classList.toggle(
+                        "saved"
                     );
 
-
                     if (
-                        commentArea.classList.contains(
-                            "show"
+                        saveButton.classList.contains(
+                            "saved"
                         )
                     ) {
 
-                        commentInput?.focus();
+                        showToast(
+                            "تم حفظ المنشور 🔖",
+                            "🔖"
+                        );
+
+                    } else {
+
+                        showToast(
+                            "تم إلغاء حفظ المنشور",
+                            "✓"
+                        );
 
                     }
 
@@ -775,77 +683,25 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        /* SEND COMMENT */
-
-        if (
-            commentSend &&
-            commentInput
-        ) {
-
-            commentSend.addEventListener(
-                "click",
-                () => {
-
-                    addComment(
-                        post,
-                        commentInput
-                    );
-
-                }
-            );
-
+        if (commentInput) {
 
             commentInput.addEventListener(
                 "keydown",
                 event => {
 
                     if (
-                        event.key === "Enter"
+                        event.key === "Enter" &&
+                        commentInput.value.trim()
                     ) {
 
-                        event.preventDefault();
+                        const comment =
+                            commentInput.value.trim();
 
-                        addComment(
-                            post,
-                            commentInput
-                        );
-
-                    }
-
-                }
-            );
-
-        }
-
-
-        /* SHARE */
-
-        if (shareBtn) {
-
-            shareBtn.addEventListener(
-                "click",
-                () => {
-
-                    const shareData = {
-                        title: "Connect",
-                        text:
-                            "شوف المنشور هذا على Connect"
-                    };
-
-
-                    if (
-                        navigator.share
-                    ) {
-
-                        navigator.share(
-                            shareData
-                        ).catch(() => {});
-
-                    } else {
+                        commentInput.value = "";
 
                         showToast(
-                            "تم نسخ رابط المنشور",
-                            "🔗"
+                            "تم إضافة تعليق 💬",
+                            "💬"
                         );
 
                     }
@@ -854,150 +710,235 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
         }
-
-
-        /* POST MENU */
-
-        const menu =
-            post.querySelector(".post-menu");
-
-        if (menu) {
-
-            menu.addEventListener(
-                "click",
-                () => {
-
-                    showToast(
-                        "خيارات المنشور",
-                        "•••"
-                    );
-
-                }
-            );
-
-        }
-
-    }
-
-
-    function addComment(
-        post,
-        input
-    ) {
-
-        const text =
-            input.value.trim();
-
-        if (!text) return;
-
-
-        const commentsArea =
-            post.querySelector(
-                ".comments-area"
-            );
-
-
-        const comment =
-            document.createElement("div");
-
-        comment.className = "comment";
-
-
-        comment.innerHTML = `
-
-            <div class="avatar avatar-tiny">
-                K
-            </div>
-
-            <div class="comment-bubble">
-
-                <strong>
-                    Khalil
-                </strong>
-
-                <p>
-                    ${escapeHTML(text)}
-                </p>
-
-            </div>
-
-        `;
-
-
-        const inputBox =
-            commentsArea.querySelector(
-                ".comment-input"
-            );
-
-
-        commentsArea.insertBefore(
-            comment,
-            inputBox
-        );
-
-
-        input.value = "";
-
-
-        showToast(
-            "تم إضافة التعليق 💬",
-            "✓"
-        );
 
     }
 
 
     document
         .querySelectorAll(".post-card")
-        .forEach(attachPostEvents);
+        .forEach(post => {
+
+            attachPostEvents(post);
+
+        });
 
 
     /* =====================================================
-       SAVE POSTS
+       FOLLOW BUTTONS
     ===================================================== */
 
-    function savePostLocally(post) {
+    document
+        .querySelectorAll(".follow-btn")
+        .forEach(button => {
 
-        let posts = [];
+            button.addEventListener(
+                "click",
+                () => {
 
-        try {
+                    const isFollowing =
+                        button.dataset.following === "true";
 
-            posts =
-                JSON.parse(
-                    localStorage.getItem(
-                        "connect_posts"
-                    )
-                ) || [];
 
-        } catch {
+                    if (isFollowing) {
 
-            posts = [];
+                        button.textContent =
+                            "متابعة";
+
+                        button.dataset.following =
+                            "false";
+
+                    } else {
+
+                        button.textContent =
+                            "✓ متابع";
+
+                        button.dataset.following =
+                            "true";
+
+                        showToast(
+                            "تمت المتابعة بنجاح 👥",
+                            "✓"
+                        );
+
+                    }
+
+                }
+            );
+
+        });
+
+
+    /* =====================================================
+       DARK MODE
+    ===================================================== */
+
+    function setDarkMode(enabled) {
+
+        document.body.classList.toggle(
+            "dark",
+            enabled
+        );
+
+        if (darkModeSwitch) {
+            darkModeSwitch.checked = enabled;
+        }
+
+        if (themeBtn) {
+
+            themeBtn.textContent =
+                enabled ? "☀️" : "🌙";
 
         }
 
-
-        posts.unshift(post);
-
-
         localStorage.setItem(
-            "connect_posts",
-            JSON.stringify(posts.slice(0, 30))
+            "connect_dark_mode",
+            enabled ? "true" : "false"
+        );
+
+    }
+
+
+    const savedTheme =
+        localStorage.getItem(
+            "connect_dark_mode"
+        );
+
+    if (savedTheme === "true") {
+
+        setDarkMode(true);
+
+    }
+
+
+    if (themeBtn) {
+
+        themeBtn.addEventListener(
+            "click",
+            () => {
+
+                const enabled =
+                    !document.body.classList.contains(
+                        "dark"
+                    );
+
+                setDarkMode(enabled);
+
+            }
+        );
+
+    }
+
+
+    if (darkModeSwitch) {
+
+        darkModeSwitch.addEventListener(
+            "change",
+            () => {
+
+                setDarkMode(
+                    darkModeSwitch.checked
+                );
+
+            }
         );
 
     }
 
 
     /* =====================================================
-       SEARCH
+       NOTIFICATION PANEL
     ===================================================== */
 
-    if (globalSearch) {
+    if (notificationBtn) {
 
-        globalSearch.addEventListener(
-            "input",
+        notificationBtn.addEventListener(
+            "click",
+            event => {
+
+                event.stopPropagation();
+
+                notificationPanel.classList.toggle(
+                    "show"
+                );
+
+            }
+        );
+
+    }
+
+
+    if (closeNotificationPanel) {
+
+        closeNotificationPanel.addEventListener(
+            "click",
             () => {
 
-                const query =
-                    globalSearch.value
-                        .trim()
-            
+                notificationPanel.classList.remove(
+                    "show"
+                );
+
+            }
+        );
+
+    }
+
+
+    document.addEventListener(
+        "click",
+        event => {
+
+            if (
+                notificationPanel &&
+                notificationPanel.classList.contains("show") &&
+                !notificationPanel.contains(event.target) &&
+                !notificationBtn.contains(event.target)
+            ) {
+
+                notificationPanel.classList.remove(
+                    "show"
+                );
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       MARK NOTIFICATIONS
+    ===================================================== */
+
+    if (markNotifications) {
+
+        markNotifications.addEventListener(
+            "click",
+            () => {
+
+                document
+                    .querySelectorAll(
+                        ".notification-item.unread"
+                    )
+                    .forEach(item => {
+
+                        item.classList.remove(
+                            "unread"
+                        );
+
+                    });
+
+
+                const badges =
+                    document.querySelectorAll(
+                        ".notification-badge, .nav-count"
+                    );
+
+
+                badges.forEach(badge => {
+
+                    badge.style.display = "none";
+
+                });
+
+
+                showToast(
+                    "تم تحديد الإشعا    

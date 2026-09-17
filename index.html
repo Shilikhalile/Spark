@@ -1,795 +1,915 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="theme-color" content="#0084ff">
-  <title>ChatHub - Messenger</title>
-  <link rel="manifest" href="data:application/json,{&quot;name&quot;:&quot;ChatHub&quot;,&quot;short_name&quot;:&quot;ChatHub&quot;,&quot;start_url&quot;:&quot;/&quot;,&quot;display&quot;:&quot;standalone&quot;}">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
 
-    html, body {
-      width: 100%;
-      height: 100%;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
-      background: #fff;
-      color: #000;
-      overflow: hidden;
-    }
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
 
-    .app-container {
-      display: flex;
-      height: 100vh;
-      background: #fff;
-    }
+  <meta name="theme-color" content="#0b0d12">
 
-    /* ============ الواجهة الرئيسية ============ */
-    .main-layout {
-      display: flex;
-      width: 100%;
-      height: 100%;
-    }
+  <title>Connect — Social Network</title>
 
-    /* ============ الشريط الجانبي - قائمة المحادثات ============ */
-    .sidebar {
-      width: 360px;
-      background: #fff;
-      border-right: 1px solid #e5e5e5;
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-    }
-
-    .sidebar-header {
-      padding: 16px 20px;
-      border-bottom: 1px solid #e5e5e5;
-    }
-
-    .header-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-    }
-
-    .header-top h1 {
-      font-size: 32px;
-      font-weight: 800;
-    }
-
-    .header-icons {
-      display: flex;
-      gap: 8px;
-    }
-
-    .icon-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: #f0f2f5;
-      border: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      transition: all 0.2s;
-    }
-
-    .icon-btn:hover {
-      background: #e4e6eb;
-    }
-
-    .search-box {
-      position: relative;
-    }
-
-    .search-box input {
-      width: 100%;
-      padding: 10px 16px 10px 36px;
-      border-radius: 50px;
-      border: none;
-      background: #f0f2f5;
-      font-size: 15px;
-      outline: none;
-      transition: all 0.2s;
-    }
-
-    .search-box input:focus {
-      background: #e4e6eb;
-    }
-
-    .search-icon {
-      position: absolute;
-      left: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #65676b;
-    }
-
-    .conversations-container {
-      flex: 1;
-      overflow-y: auto;
-      overflow-x: hidden;
-    }
-
-    .conversation-item {
-      padding: 8px 8px;
-      margin: 0 8px;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background: transparent;
-      border: none;
-      width: calc(100% - 16px);
-      text-align: right;
-      color: inherit;
-    }
-
-    .conversation-item:hover {
-      background: #f0f2f5;
-    }
-
-    .conversation-item.active {
-      background: #f0f2f5;
-    }
-
-    .avatar {
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #0084ff, #00b4d8);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: bold;
-      font-size: 20px;
-      flex-shrink: 0;
-    }
-
-    .conversation-info {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .conversation-name {
-      font-weight: 500;
-      font-size: 15px;
-      margin-bottom: 4px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .conversation-preview {
-      font-size: 13px;
-      color: #65676b;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .timestamp {
-      font-size: 12px;
-      color: #65676b;
-      flex-shrink: 0;
-    }
-
-    /* ============ منطقة الدردشة ============ */
-    .chat-container {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      background: #fff;
-      position: relative;
-    }
-
-    .chat-container.empty {
-      align-items: center;
-      justify-content: center;
-    }
-
-    .empty-state {
-      text-align: center;
-      color: #65676b;
-    }
-
-    .empty-state-icon {
-      font-size: 60px;
-      margin-bottom: 16px;
-    }
-
-    .empty-state h2 {
-      font-size: 24px;
-      margin-bottom: 8px;
-      color: #000;
-    }
-
-    .empty-state p {
-      font-size: 15px;
-    }
-
-    /* ============ رأس الدردشة ============ */
-    .chat-header {
-      padding: 12px 20px;
-      border-bottom: 1px solid #e5e5e5;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #fff;
-    }
-
-    .chat-header-info {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .chat-header-text h2 {
-      font-size: 15px;
-      font-weight: 500;
-    }
-
-    .chat-header-text p {
-      font-size: 12px;
-      color: #65676b;
-    }
-
-    .header-actions {
-      display: flex;
-      gap: 8px;
-    }
-
-    /* ============ منطقة الرسائل ============ */
-    .messages-area {
-      flex: 1;
-      overflow-y: auto;
-      padding: 16px 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .message {
-      display: flex;
-      gap: 8px;
-      animation: slideUp 0.3s ease-out;
-    }
-
-    @keyframes slideUp {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .message.own {
-      justify-content: flex-end;
-    }
-
-    .message-bubble {
-      max-width: 55%;
-      padding: 10px 14px;
-      border-radius: 18px;
-      font-size: 15px;
-      line-height: 1.4;
-      word-wrap: break-word;
-      word-break: break-word;
-    }
-
-    .message.other .message-bubble {
-      background: #e4e6eb;
-      color: #000;
-    }
-
-    .message.own .message-bubble {
-      background: #0084ff;
-      color: #fff;
-      border-bottom-right-radius: 4px;
-    }
-
-    .message-time {
-      font-size: 12px;
-      color: #65676b;
-      margin-top: 4px;
-      text-align: center;
-    }
-
-    /* ============ منطقة الإدخال ============ */
-    .input-area {
-      padding: 12px 20px 20px;
-      background: #fff;
-      border-top: 1px solid #e5e5e5;
-    }
-
-    .input-wrapper {
-      display: flex;
-      gap: 8px;
-      align-items: flex-end;
-    }
-
-    .input-actions {
-      display: flex;
-      gap: 8px;
-    }
-
-    .action-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: #f0f2f5;
-      border: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      transition: all 0.2s;
-    }
-
-    .action-btn:hover {
-      background: #e4e6eb;
-    }
-
-    .message-input-wrapper {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      background: #f0f2f5;
-      border-radius: 50px;
-      padding: 8px 16px;
-      gap: 8px;
-    }
-
-    .message-input {
-      flex: 1;
-      border: none;
-      background: transparent;
-      font-size: 15px;
-      outline: none;
-      resize: none;
-      max-height: 100px;
-      font-family: inherit;
-    }
-
-    .message-input::placeholder {
-      color: #65676b;
-    }
-
-    .emoji-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 20px;
-      padding: 0;
-      transition: all 0.2s;
-    }
-
-    .emoji-btn:hover {
-      transform: scale(1.2);
-    }
-
-    .send-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: #0084ff;
-      border: none;
-      color: white;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      transition: all 0.2s;
-    }
-
-    .send-btn:hover {
-      background: #0073e6;
-    }
-
-    .send-btn:active {
-      transform: scale(0.95);
-    }
-
-    /* ============ Emoji Picker ============ */
-    .emoji-picker {
-      display: none;
-      position: absolute;
-      bottom: 80px;
-      left: 20px;
-      background: white;
-      border: 1px solid #e5e5e5;
-      border-radius: 12px;
-      padding: 10px;
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 5px;
-      z-index: 100;
-      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-    }
-
-    .emoji-picker.show {
-      display: grid;
-    }
-
-    .emoji-item {
-      cursor: pointer;
-      font-size: 28px;
-      padding: 8px;
-      border-radius: 8px;
-      transition: all 0.2s;
-    }
-
-    .emoji-item:hover {
-      background: #f0f2f5;
-      transform: scale(1.2);
-    }
-
-    /* ============ تصميم جوال ============ */
-    @media (max-width: 768px) {
-      .app-container {
-        flex-direction: column;
-      }
-
-      .sidebar {
-        width: 100%;
-        height: auto;
-        border-right: none;
-        border-bottom: 1px solid #e5e5e5;
-        max-height: 35%;
-      }
-
-      .chat-container {
-        height: 65%;
-      }
-
-      .sidebar-header {
-        padding: 12px 16px;
-      }
-
-      .header-top h1 {
-        font-size: 24px;
-      }
-
-      .message-bubble {
-        max-width: 70%;
-      }
-
-      .conversations-container {
-        max-height: 200px;
-      }
-
-      .emoji-picker {
-        left: 10px;
-        right: 10px;
-      }
-    }
-
-    /* ============ Scrollbar ============ */
-    ::-webkit-scrollbar {
-      width: 8px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: #ccc;
-      border-radius: 4px;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-      background: #999;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-  <div class="app-container">
-    <!-- التطبيق الرئيسي -->
-    <div class="main-layout" id="mainLayout">
-      <!-- الشريط الجانبي -->
-      <div class="sidebar">
-        <div class="sidebar-header">
-          <div class="header-top">
-            <h1>الرسائل</h1>
-            <div class="header-icons">
-              <button class="icon-btn" onclick="alert('إضافة محادثة جديدة')">➕</button>
-              <button class="icon-btn" onclick="alert('المزيد من الخيارات')">⋮</button>
-            </div>
-          </div>
-          <div class="search-box">
-            <span class="search-icon">🔍</span>
-            <input type="text" id="searchInput" placeholder="ابحث عن محادثة..." onkeyup="filterConversations()">
-          </div>
-        </div>
 
-        <div class="conversations-container" id="conversationsList">
-          <!-- المحادثات هنا -->
-        </div>
+  <!-- =========================
+       APP
+  ========================== -->
+  <div class="app">
+
+    <!-- =========================
+         TOP BAR
+    ========================== -->
+    <header class="topbar">
+
+      <div class="brand">
+        <div class="brand-logo">C</div>
+        <span>Connect</span>
       </div>
 
-      <!-- منطقة الدردشة -->
-      <div class="chat-container empty" id="chatContainer">
-        <div class="empty-state">
-          <div class="empty-state-icon">💬</div>
-          <h2>اختر محادثة</h2>
-          <p>اختر محادثة من اليسار لبدء الرسالة</p>
-        </div>
+      <div class="top-search">
+        <span>⌕</span>
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Rechercher..."
+        >
       </div>
-    </div>
-  </div>
 
-  <script>
-    // ============ متغيرات عامة ============
-    let conversations = {};
-    let currentConversation = null;
-    let currentUser = { name: 'أنت', id: 'user_me' };
+      <div class="top-actions">
 
-    // ============ البيانات الوهمية ============
-    function initializeData() {
-      conversations = {
-        'conv_1': {
-          id: 'conv_1',
-          name: 'أحمد محمد',
-          avatar: 'أ',
-          messages: [
-            { id: 1, sender: 'other', text: 'السلام عليكم! كيف حالك؟', time: '09:30' },
-            { id: 2, sender: 'me', text: 'وعليكم السلام! تمام الحمد لله 👋', time: '09:31' },
-            { id: 3, sender: 'other', text: 'شو أخبارك؟', time: '09:32' },
-            { id: 4, sender: 'me', text: 'كل التمام، والحمد لله! كيفك أنت؟', time: '09:33' }
-          ]
-        },
-        'conv_2': {
-          id: 'conv_2',
-          name: 'فاطمة علي',
-          avatar: 'ف',
-          messages: [
-            { id: 1, sender: 'other', text: 'هلا! وين رايح؟', time: '10:15' },
-            { id: 2, sender: 'me', text: 'بروح الجامعة', time: '10:16' },
-            { id: 3, sender: 'other', text: 'تمام، نتكلم بعدين 👍', time: '10:17' }
-          ]
-        },
-        'conv_3': {
-          id: 'conv_3',
-          name: 'سارة حسين',
-          avatar: 'س',
-          messages: [
-            { id: 1, sender: 'me', text: 'شنو الأخبار؟', time: '08:00' },
-            { id: 2, sender: 'other', text: 'تمام الحمد لله ✨', time: '08:05' }
-          ]
-        }
-      };
+        <button class="top-btn" id="themeBtn" title="Mode sombre">
+          ◐
+        </button>
 
-      localStorage.setItem('chathub_conversations', JSON.stringify(conversations));
-    }
+        <button class="top-btn notification-btn" id="notificationBtn">
+          ♡
+          <span class="notification-dot"></span>
+        </button>
 
-    // ============ تحميل البيانات ============
-    function loadData() {
-      const saved = localStorage.getItem('chathub_conversations');
-      if (saved) {
-        conversations = JSON.parse(saved);
-      } else {
-        initializeData();
-      }
-    }
+        <button class="top-btn" id="messageBtn">
+          ◌
+        </button>
 
-    // ============ رسم المحادثات ============
-    function renderConversations() {
-      const list = document.getElementById('conversationsList');
-      list.innerHTML = '';
+        <button class="profile-mini" id="profileBtn">
+          <span>K</span>
+        </button>
 
-      for (let id in conversations) {
-        const conv = conversations[id];
-        const lastMsg = conv.messages[conv.messages.length - 1];
-        
-        const item = document.createElement('button');
-        item.className = 'conversation-item' + (currentConversation === id ? ' active' : '');
-        item.onclick = () => openConversation(id);
-        
-        item.innerHTML = `
-          <div class="avatar">${conv.avatar}</div>
-          <div class="conversation-info">
-            <div class="conversation-name">${conv.name}</div>
-            <div class="conversation-preview">${lastMsg.text}</div>
-          </div>
-          <div class="timestamp">${lastMsg.time}</div>
-        `;
-        
-        list.appendChild(item);
-      }
-    }
+      </div>
 
-    // ============ فتح محادثة ============
-    function openConversation(id) {
-      currentConversation = id;
-      const conv = conversations[id];
-      
-      const chatContainer = document.getElementById('chatContainer');
-      chatContainer.classList.remove('empty');
-      chatContainer.innerHTML = `
-        <div class="chat-header">
-          <div class="chat-header-info">
-            <div class="avatar" style="width: 40px; height: 40px; font-size: 16px;">${conv.avatar}</div>
-            <div class="chat-header-text">
-              <h2>${conv.name}</h2>
-              <p>نشط الآن</p>
+    </header>
+
+
+    <!-- =========================
+         MAIN LAYOUT
+    ========================== -->
+    <main class="main-layout">
+
+      <!-- =========================
+           LEFT SIDEBAR
+      ========================== -->
+      <aside class="left-sidebar">
+
+        <nav class="main-nav">
+
+          <button class="nav-item active" data-page="home">
+            <span class="nav-icon">⌂</span>
+            <span>Accueil</span>
+          </button>
+
+          <button class="nav-item" data-page="explore">
+            <span class="nav-icon">⌕</span>
+            <span>Explorer</span>
+          </button>
+
+          <button class="nav-item" data-page="notifications">
+            <span class="nav-icon">♡</span>
+            <span>Notifications</span>
+            <span class="nav-count">3</span>
+          </button>
+
+          <button class="nav-item" data-page="messages">
+            <span class="nav-icon">◌</span>
+            <span>Messages</span>
+          </button>
+
+          <button class="nav-item" data-page="profile">
+            <span class="nav-icon">◯</span>
+            <span>Profil</span>
+          </button>
+
+        </nav>
+
+
+        <button class="create-post-btn" id="createPostBtn">
+          <span>＋</span>
+          Créer une publication
+        </button>
+
+
+        <div class="sidebar-bottom">
+
+          <button class="nav-item" data-page="settings">
+            <span class="nav-icon">⚙</span>
+            <span>Paramètres</span>
+          </button>
+
+          <div class="user-card">
+
+            <div class="user-avatar">
+              K
             </div>
+
+            <div class="user-info">
+              <strong>Khalil</strong>
+              <span>@khalil</span>
+            </div>
+
+            <button class="more-user-btn">
+              ⋯
+            </button>
+
           </div>
-          <div class="header-actions">
-            <button class="icon-btn">☎️</button>
-            <button class="icon-btn">📹</button>
-            <button class="icon-btn">ⓘ</button>
-          </div>
+
         </div>
 
-        <div class="messages-area" id="messagesArea">
-          <!-- الرسائل هنا -->
+      </aside>
+
+
+      <!-- =========================
+           CENTER CONTENT
+      ========================== -->
+      <section class="content" id="content">
+
+
+        <!-- =====================
+             HOME
+        ====================== -->
+        <div class="page active" id="homePage">
+
+          <div class="page-header">
+
+            <div>
+              <h1>Accueil</h1>
+              <p>Découvrez ce qui se passe autour de vous.</p>
+            </div>
+
+            <button class="mobile-create" id="mobileCreateBtn">
+              ＋
+            </button>
+
+          </div>
+
+
+          <!-- STORIES -->
+          <div class="stories-section">
+
+            <div class="section-title">
+              <h2>Stories</h2>
+              <button>Voir tout</button>
+            </div>
+
+            <div class="stories">
+
+              <div class="story add-story">
+                <div class="story-avatar">
+                  ＋
+                </div>
+                <span>Votre story</span>
+              </div>
+
+              <div class="story">
+                <div class="story-avatar gradient-1">
+                  A
+                </div>
+                <span>Ahmed</span>
+              </div>
+
+              <div class="story">
+                <div class="story-avatar gradient-2">
+                  S
+                </div>
+                <span>Sara</span>
+              </div>
+
+              <div class="story">
+                <div class="story-avatar gradient-3">
+                  M
+                </div>
+                <span>Mohamed</span>
+              </div>
+
+              <div class="story">
+                <div class="story-avatar gradient-4">
+                  F
+                </div>
+                <span>Fatma</span>
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <!-- CREATE POST -->
+          <div class="create-box">
+
+            <div class="create-user-avatar">
+              K
+            </div>
+
+            <button class="create-input" id="createInput">
+              Quoi de neuf, Khalil ?
+            </button>
+
+            <div class="create-actions">
+
+              <button>
+                <span>▧</span>
+                Photo
+              </button>
+
+              <button>
+                <span>◎</span>
+                Vidéo
+              </button>
+
+              <button>
+                <span>☺</span>
+                Humeur
+              </button>
+
+            </div>
+
+          </div>
+
+
+          <!-- FEED -->
+          <div class="feed" id="feed">
+
+
+            <!-- POST 1 -->
+            <article class="post">
+
+              <div class="post-header">
+
+                <div class="post-user-avatar gradient-1">
+                  A
+                </div>
+
+                <div class="post-user-info">
+                  <strong>Ahmed Ben Ali</strong>
+                  <span>@ahmed · Il y a 12 min</span>
+                </div>
+
+                <button class="post-more">
+                  ⋯
+                </button>
+
+              </div>
+
+
+              <div class="post-content">
+
+                <p>
+                  Une nouvelle journée, une nouvelle opportunité.
+                  🚀
+                </p>
+
+              </div>
+
+
+              <div class="post-stats">
+                <span>❤️ 24 réactions</span>
+                <span>8 commentaires</span>
+              </div>
+
+
+              <div class="post-actions">
+
+                <button class="like-btn">
+                  ♡
+                  <span>J'aime</span>
+                </button>
+
+                <button class="comment-btn">
+                  ◌
+                  <span>Commenter</span>
+                </button>
+
+                <button class="share-btn">
+                  ↗
+                  <span>Partager</span>
+                </button>
+
+              </div>
+
+
+              <div class="comment-area">
+
+                <div class="comment-avatar">
+                  K
+                </div>
+
+                <input
+                  type="text"
+                  placeholder="Écrire un commentaire..."
+                >
+
+              </div>
+
+            </article>
+
+
+            <!-- POST 2 -->
+            <article class="post">
+
+              <div class="post-header">
+
+                <div class="post-user-avatar gradient-2">
+                  S
+                </div>
+
+                <div class="post-user-info">
+                  <strong>Sara Trabelsi</strong>
+                  <span>@sara · Il y a 35 min</span>
+                </div>
+
+                <button class="post-more">
+                  ⋯
+                </button>
+
+              </div>
+
+
+              <div class="post-content">
+
+                <p>
+                  Aujourd'hui je commence quelque chose de nouveau.
+                  ✨
+                </p>
+
+                <div class="post-image-placeholder">
+                  <div>
+                    <span>✦</span>
+                    <p>Votre contenu visuel apparaîtra ici</p>
+                  </div>
+                </div>
+
+              </div>
+
+
+              <div class="post-stats">
+                <span>❤️ 57 réactions</span>
+                <span>14 commentaires</span>
+              </div>
+
+
+              <div class="post-actions">
+
+                <button class="like-btn">
+                  ♡
+                  <span>J'aime</span>
+                </button>
+
+                <button class="comment-btn">
+                  ◌
+                  <span>Commenter</span>
+                </button>
+
+                <button class="share-btn">
+                  ↗
+                  <span>Partager</span>
+                </button>
+
+              </div>
+
+
+              <div class="comment-area">
+
+                <div class="comment-avatar">
+                  K
+                </div>
+
+                <input
+                  type="text"
+                  placeholder="Écrire un commentaire..."
+                >
+
+              </div>
+
+            </article>
+
+
+            <!-- POST 3 -->
+            <article class="post">
+
+              <div class="post-header">
+
+                <div class="post-user-avatar gradient-3">
+                  M
+                </div>
+
+                <div class="post-user-info">
+                  <strong>Mohamed Amine</strong>
+                  <span>@mohamed · Il y a 1 h</span>
+                </div>
+
+                <button class="post-more">
+                  ⋯
+                </button>
+
+              </div>
+
+
+              <div class="post-content">
+
+                <p>
+                  Le meilleur investissement reste toujours
+                  l'investissement dans soi-même. 📚
+                </p>
+
+              </div>
+
+
+              <div class="post-stats">
+                <span>❤️ 31 réactions</span>
+                <span>5 commentaires</span>
+              </div>
+
+
+              <div class="post-actions">
+
+                <button class="like-btn">
+                  ♡
+                  <span>J'aime</span>
+                </button>
+
+                <button class="comment-btn">
+                  ◌
+                  <span>Commenter</span>
+                </button>
+
+                <button class="share-btn">
+                  ↗
+                  <span>Partager</span>
+                </button>
+
+              </div>
+
+            </article>
+
+          </div>
+
         </div>
 
-        <div class="input-area">
-          <div class="input-wrapper">
-            <div class="input-actions">
-              <button class="action-btn" onclick="alert('إرسال صورة')">🖼️</button>
-              <button class="action-btn" onclick="toggleEmojiPicker()">😊</button>
-            </div>
-            <div class="message-input-wrapper">
-              <input type="text" class="message-input" id="messageInput" placeholder="Aa" onkeypress="handleKeyPress(event)">
-              <button class="send-btn" onclick="sendMessage()">➤</button>
+
+        <!-- =====================
+             EXPLORE
+        ====================== -->
+        <div class="page" id="explorePage">
+
+          <div class="page-header">
+            <div>
+              <h1>Explorer</h1>
+              <p>Découvrez de nouvelles personnes et contenus.</p>
             </div>
           </div>
-          <div class="emoji-picker" id="emojiPicker">
-            <span class="emoji-item" onclick="insertEmoji('😀')">😀</span>
-            <span class="emoji-item" onclick="insertEmoji('😂')">😂</span>
-            <span class="emoji-item" onclick="insertEmoji('😍')">😍</span>
-            <span class="emoji-item" onclick="insertEmoji('🤔')">🤔</span>
-            <span class="emoji-item" onclick="insertEmoji('👍')">👍</span>
-            <span class="emoji-item" onclick="insertEmoji('❤️')">❤️</span>
-            <span class="emoji-item" onclick="insertEmoji('🔥')">🔥</span>
-            <span class="emoji-item" onclick="insertEmoji('✨')">✨</span>
-            <span class="emoji-item" onclick="insertEmoji('🎉')">🎉</span>
-            <span class="emoji-item" onclick="insertEmoji('💯')">💯</span>
-            <span class="emoji-item" onclick="insertEmoji('👋')">👋</span>
-            <span class="emoji-item" onclick="insertEmoji('😴')">😴</span>
+
+
+          <div class="explore-search">
+
+            <span>⌕</span>
+
+            <input
+              type="text"
+              placeholder="Rechercher des personnes, posts..."
+            >
+
           </div>
+
+
+          <div class="explore-grid">
+
+            <div class="explore-card">
+              <div class="explore-icon">🔥</div>
+              <h3>Tendances</h3>
+              <p>Découvrez les sujets populaires.</p>
+            </div>
+
+            <div class="explore-card">
+              <div class="explore-icon">👥</div>
+              <h3>Personnes</h3>
+              <p>Trouvez de nouvelles personnes.</p>
+            </div>
+
+            <div class="explore-card">
+              <div class="explore-icon">#</div>
+              <h3>Hashtags</h3>
+              <p>Explorez les conversations.</p>
+            </div>
+
+            <div class="explore-card">
+              <div class="explore-icon">✦</div>
+              <h3>Pour vous</h3>
+              <p>Du contenu sélectionné pour vous.</p>
+            </div>
+
+          </div>
+
         </div>
-      `;
 
-      renderMessages();
-      renderConversations();
-      document.getElementById('messageInput').focus();
-    }
 
-    // ============ رسم الرسائل ============
-    function renderMessages() {
-      const conv = conversations[currentConversation];
-      const messagesArea = document.getElementById('messagesArea');
-      messagesArea.innerHTML = '';
+        <!-- =====================
+             NOTIFICATIONS
+        ====================== -->
+        <div class="page" id="notificationsPage">
 
-      conv.messages.forEach(msg => {
-        const messageDiv = document.createElement('div');
-        messageDiv.className = 'message ' + (msg.sender === 'me' ? 'own' : 'other');
-        
-        messageDiv.innerHTML = `
-          <div class="message-bubble">${msg.text}</div>
-          <div class="message-time">${msg.time}</div>
-        `;
-        
-        messagesArea.appendChild(messageDiv);
-      });
+          <div class="page-header">
+            <div>
+              <h1>Notifications</h1>
+              <p>Restez informé de votre activité.</p>
+            </div>
+          </div>
 
-      messagesArea.scrollTop = messagesArea.scrollHeight;
-    }
 
-    // ============ إرسال رسالة ============
-    function sendMessage() {
-      const input = document.getElementById('messageInput');
-      const text = input.value.trim();
+          <div class="notifications-list">
 
-      if (!text || !currentConversation) return;
+            <div class="notification-item">
 
-      const now = new Date();
-      const time = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+              <div class="notification-avatar gradient-1">
+                A
+              </div>
 
-      conversations[currentConversation].messages.push({
-        id: Date.now(),
-        sender: 'me',
-        text: text,
-        time: time
-      });
+              <div>
+                <strong>Ahmed Ben Ali</strong>
+                <p>a aimé votre publication.</p>
+                <span>Il y a 5 min</span>
+              </div>
 
-      input.value = '';
-      localStorage.setItem('chathub_conversations', JSON.stringify(conversations));
-      
-      renderMessages();
-      renderConversations();
+            </div>
 
-      // محاكاة الرد التلقائي
-      setTimeout(() => {
-        const responses = [
-          'شنو الأخبار؟ 👋',
-          'تمام! 😊',
-          'أيوه أيوه 👍',
-          'حلو! 🔥',
-          'شكراً لك ❤️',
-          'عاشت يداك ✨'
-        ];
-        const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-        
-        conversations[currentConversation].messages.push({
-          id: Date.now(),
-          sender: 'other',
-          text: randomResponse,
-          time: new Date().getHours() + ':' + String(new Date().getMinutes()).padStart(2, '0')
-        });
 
-        localStorage.setItem('chathub_conversations', JSON.stringify(conversations));
-        renderMessages();
-        renderConversations();
-      }, 1000);
-    }
+            <div class="notification-item">
 
-    function handleKeyPress(event) {
-      if (event.key === 'Enter' && !event.shiftKey) {
-        event.preventDefault();
-        sendMessage();
-      }
-    }
+              <div class="notification-avatar gradient-2">
+                S
+              </div>
 
-    // ============ Emojis ============
-    function toggleEmojiPicker() {
-      const picker = document.getElementById('emojiPicker');
-      picker.classList.toggle('show');
-    }
+              <div>
+                <strong>Sara Trabelsi</strong>
+                <p>a commencé à vous suivre.</p>
+                <span>Il y a 20 min</span>
+              </div>
 
-    function insertEmoji(emoji) {
-      const input = document.getElementById('messageInput');
-      input.value += emoji;
-      input.focus();
-    }
+              <button class="follow-back">
+                Suivre
+              </button>
 
-    // ============ البحث ============
-    function filterConversations() {
-      const query = document.getElementById('searchInput').value.toLowerCase();
-      const items = document.querySelectorAll('.conversation-item');
+            </div>
 
-      items.forEach(item => {
-        const name = item.querySelector('.conversation-name').textContent.toLowerCase();
-        item.style.display = name.includes(query) ? '' : 'none';
-      });
-    }
 
-    // ============ التهيئة ============
-    window.addEventListener('load', () => {
-      loadData();
-      renderConversations();
-    });
+            <div class="notification-item">
 
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('.emoji-btn') && !e.target.closest('.emoji-picker')) {
-        if (document.getElementById('emojiPicker')) {
-          document.getElementById('emojiPicker').classList.remove('show');
-        }
-      }
-    });
+              <div class="notification-avatar gradient-3">
+                M
+              </div>
 
-    // ============ دعم PWA ============
-    if ('serviceWorker' in navigator) {
-      navigator.ser
+              <div>
+                <strong>Mohamed Amine</strong>
+                <p>a commenté votre publication.</p>
+                <span>Il y a 1 h</span>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- =====================
+             MESSAGES
+        ====================== -->
+        <div class="page" id="messagesPage">
+
+          <div class="page-header">
+            <div>
+              <h1>Messages</h1>
+              <p>Discutez avec vos amis.</p>
+            </div>
+          </div>
+
+
+          <div class="messages-layout">
+
+            <div class="conversation-list">
+
+              <div class="message-search">
+                <span>⌕</span>
+                <input
+                  type="text"
+                  placeholder="Rechercher..."
+                >
+              </div>
+
+
+              <button class="conversation active">
+
+                <div class="conversation-avatar gradient-1">
+                  A
+                </div>
+
+                <div class="conversation-info">
+                  <strong>Ahmed Ben Ali</strong>
+                  <span>On se parle après 👋</span>
+                </div>
+
+                <small>12:42</small>
+
+              </button>
+
+
+              <button class="conversation">
+
+                <div class="conversation-avatar gradient-2">
+                  S
+                </div>
+
+                <div class="conversation-info">
+                  <strong>Sara Trabelsi</strong>
+                  <span>À demain !</span>
+                </div>
+
+                <small>11:30</small>
+
+              </button>
+
+
+              <button class="conversation">
+
+                <div class="conversation-avatar gradient-3">
+                  M
+                </div>
+
+                <div class="conversation-info">
+                  <strong>Mohamed Amine</strong>
+                  <span>👍</span>
+                </div>
+
+                <small>Hier</small>
+
+              </button>
+
+            </div>
+
+
+            <div class="message-preview">
+
+              <div class="message-empty">
+                <div class="message-empty-icon">
+                  ◌
+                </div>
+
+                <h2>Vos messages</h2>
+
+                <p>
+                  Sélectionnez une conversation pour commencer.
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- =====================
+             PROFILE
+        ====================== -->
+        <div class="page" id="profilePage">
+
+          <div class="profile-cover"></div>
+
+          <div class="profile-main">
+
+            <div class="profile-avatar-large">
+              K
+            </div>
+
+            <div class="profile-actions">
+              <button class="secondary-btn">
+                Modifier le profil
+              </button>
+            </div>
+
+            <div class="profile-info">
+
+              <h1>Khalil</h1>
+
+              <p class="username">
+                @khalil
+              </p>
+
+              <p class="bio">
+                Bienvenue sur mon profil. 🚀
+              </p>
+
+              <div class="profile-stats">
+
+                <span>
+                  <strong>128</strong>
+                  Publications
+                </span>
+
+                <span>
+                  <strong>1.2K</strong>
+                  Abonnés
+                </span>
+
+                <span>
+                  <strong>342</strong>
+                  Abonnements
+                </span>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="profile-tabs">
+
+            <button class="active">
+              Publications
+            </button>
+
+            <button>
+              Média
+            </button>
+
+            <button>
+              J'aime
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <!-- =====================
+             SETTINGS
+        ====================== -->
+        <div class="page" id="settingsPage">
+
+          <div class="page-header">
+
+            <div>
+              <h1>Paramètres</h1>
+              <p>Gérez votre compte et vos préférences.</p>
+            </div>
+
+          </div>
+
+
+          <div class="settings-list">
+
+            <button class="setting-item">
+
+              <div class="setting-icon">
+                👤
+              </div>
+
+              <div>
+                <strong>Compte</strong>
+                <span>Informations personnelles</span>
+              </div>
+
+              <b>›</b>
+
+            </button>
+
+
+            <button class="setting-item">
+
+              <div class="setting-icon">
+                🔒
+              </div>
+
+              <div>
+                <strong>Confidentialité</strong>
+                <span>Contrôlez qui peut vous voir</span>
+              </div>
+
+              <b>›</b>
+
+            </button>
+
+
+            <button class="setting-item">
+
+              <div class="setting-icon">
+                🔔
+              </div>
+
+              <div>
+                <strong>Notifications</strong>
+                <span>Gérez vos notifications</span>
+              </div>
+
+              <b>›</b>
+
+            </button>
+
+
+            <button class="setting-item">
+
+              <div class="setting-icon">
+                🌙
+              </div>
+
+              <div>
+                <strong>Apparence</strong>
+                <span>Mode clair ou sombre</span>
+              </div>
+
+              <b>›</b>
+
+            </button>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =========================
+           RIGHT SIDEBAR
+      ========================== -->
+      <aside class="right-sidebar">
+
+        <div class="right-section">
+
+          <div class="right-title">
+            <h2>Suggestions</h2>
+            <button>Voir tout</button>
+          </div>
+
+
+          <div class="suggestion">
+
+            <div class="suggestion-avatar gradient-1">
+              A
+            </div>
+
+            <div class="suggestion-info">
+              <strong>Ahmed Ben Ali</strong>
+              <span>@ahmed</span>
+            </div>
+
+            <button class="follow-btn">
+              Suivre
+            </button>
+
+          </div>
+
+
+          <div class="suggestion">
+
+            <div class="suggestion-avatar gradient-2">
+              S
+            </div>
+
+            <div class="suggestion-info">
+              <strong>Sara Trabelsi</strong>
+              <span>@sara</span>
+            </div>
+
+            <button class="follow-btn">
+              Suivre
+            </button>
+
+          </div>
+
+
+          <div class="suggestion">
+
+            <div class="suggestion-avatar gradient-3">
+              M
+            </div>
+
+            <div class="suggestion-info">
+              <strong>Mohamed Amine</strong>
+              <span>@mohamed</span>
+            </div>
+
+         

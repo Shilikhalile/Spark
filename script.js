@@ -43,7 +43,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const notificationBtn = document.getElementById("notificationBtn");
     const notificationPanel = document.getElementById("notificationPanel");
     const closeNotificationPanel = document.getElementById("closeNotificationPanel");
-
     const markNotifications = document.getElementById("markNotifications");
 
     const globalSearch = document.getElementById("globalSearch");
@@ -57,11 +56,42 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const viewAllStories = document.getElementById("viewAllStories");
 
+
+    /* =====================================================
+       TOAST
+    ===================================================== */
+
+    let toastTimer = null;
+
+    function showToast(message, icon = "✓") {
+
+        if (!toast) return;
+
+        if (toastText) {
+            toastText.textContent = message;
+        }
+
+        if (toastIcon) {
+            toastIcon.textContent = icon;
+        }
+
+        toast.classList.add("show");
+
+        clearTimeout(toastTimer);
+
+        toastTimer = setTimeout(() => {
+            toast.classList.remove("show");
+        }, 3000);
+    }
+
+
     /* =====================================================
        PAGE NAVIGATION
     ===================================================== */
 
     function openPage(pageId) {
+
+        if (!pageId) return;
 
         pages.forEach(page => {
             page.classList.remove("active");
@@ -132,9 +162,11 @@ document.addEventListener("DOMContentLoaded", () => {
        MOBILE SIDEBAR
     ===================================================== */
 
-    if (mobileMenuBtn) {
+    if (mobileMenuBtn && sidebar) {
 
-        mobileMenuBtn.addEventListener("click", () => {
+        mobileMenuBtn.addEventListener("click", event => {
+
+            event.stopPropagation();
 
             sidebar.classList.toggle("open");
 
@@ -145,7 +177,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.addEventListener("click", event => {
 
-        if (!sidebar) return;
+        if (!sidebar || !mobileMenuBtn) return;
 
         if (
             window.innerWidth <= 800 &&
@@ -167,18 +199,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function openPostModal() {
 
+        if (!postModal) return;
+
         postModal.classList.add("show");
 
         document.body.style.overflow = "hidden";
 
         setTimeout(() => {
-            postText.focus();
+
+            if (postText) {
+                postText.focus();
+            }
+
         }, 100);
 
     }
 
 
     function closeModal() {
+
+        if (!postModal) return;
 
         postModal.classList.remove("show");
 
@@ -235,15 +275,19 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    const modalOverlay = document.querySelector(
-        ".modal-overlay"
-    );
+    const modalOverlay = document.querySelector(".modal-overlay");
 
     if (modalOverlay) {
 
         modalOverlay.addEventListener(
             "click",
-            closeModal
+            event => {
+
+                if (event.target === modalOverlay) {
+                    closeModal();
+                }
+
+            }
         );
 
     }
@@ -253,7 +297,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (event.key === "Escape") {
 
-            if (postModal.classList.contains("show")) {
+            if (
+                postModal &&
+                postModal.classList.contains("show")
+            ) {
                 closeModal();
             }
 
@@ -273,7 +320,7 @@ document.addEventListener("DOMContentLoaded", () => {
        IMAGE UPLOAD
     ===================================================== */
 
-    if (modalPhotoBtn) {
+    if (modalPhotoBtn && imageInput) {
 
         modalPhotoBtn.addEventListener("click", () => {
 
@@ -284,7 +331,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    if (photoPostBtn) {
+    if (photoPostBtn && imageInput) {
 
         photoPostBtn.addEventListener("click", () => {
 
@@ -307,9 +354,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (!file) return;
 
+            if (!file.type.startsWith("image/")) {
+
+                showToast(
+                    "الملف المختار ليس صورة",
+                    "⚠️"
+                );
+
+                imageInput.value = "";
+
+                return;
+            }
+
             const reader = new FileReader();
 
             reader.onload = e => {
+
+                if (!selectedImage) return;
 
                 selectedImage.innerHTML = `
                     <img
@@ -336,6 +397,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (modalFeelingBtn) {
 
         modalFeelingBtn.addEventListener("click", () => {
+
+            if (!postText) return;
 
             const feelings = [
                 "😊 سعيد",
@@ -373,7 +436,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
             setTimeout(() => {
 
-                modalFeelingBtn.click();
+                if (modalFeelingBtn) {
+                    modalFeelingBtn.click();
+                }
 
             }, 100);
 
@@ -389,6 +454,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (modalLocationBtn) {
 
         modalLocationBtn.addEventListener("click", () => {
+
+            if (!postText) return;
 
             const locationText = "📍 تونس";
 
@@ -438,10 +505,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function publishNewPost() {
 
+        if (!feed || !postText) return;
+
         const text = postText.value.trim();
 
         const imageHTML =
-            selectedImage.innerHTML.trim();
+            selectedImage
+                ? selectedImage.innerHTML.trim()
+                : "";
+
 
         if (!text && !imageHTML) {
 
@@ -476,7 +548,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 </div>
 
-                <button class="post-more">
+                <button
+                    class="post-more"
+                    type="button"
+                    aria-label="المزيد"
+                >
                     ⋮
                 </button>
 
@@ -506,31 +582,47 @@ document.addEventListener("DOMContentLoaded", () => {
 
             <div class="post-stats">
 
-                <span>❤️ 0 إعجاب</span>
+                <span class="like-count">
+                    ❤️ 0 إعجاب
+                </span>
 
-                <span>0 تعليق</span>
+                <span class="comment-count">
+                    0 تعليق
+                </span>
 
             </div>
 
 
             <div class="post-actions">
 
-                <button class="post-action like-btn">
+                <button
+                    class="post-action like-btn"
+                    type="button"
+                >
                     ♡
                     <span>إعجاب</span>
                 </button>
 
-                <button class="post-action">
+                <button
+                    class="post-action comment-btn"
+                    type="button"
+                >
                     💬
                     <span>تعليق</span>
                 </button>
 
-                <button class="post-action">
+                <button
+                    class="post-action share-btn"
+                    type="button"
+                >
                     ↗️
                     <span>مشاركة</span>
                 </button>
 
-                <button class="post-action save-btn">
+                <button
+                    class="post-action save-btn"
+                    type="button"
+                >
                     🔖
                     <span>حفظ</span>
                 </button>
@@ -562,11 +654,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
         postText.value = "";
 
-        selectedImage.innerHTML = "";
+        if (selectedImage) {
+            selectedImage.innerHTML = "";
+            selectedImage.style.display = "none";
+        }
 
-        selectedImage.style.display = "none";
-
-        imageInput.value = "";
+        if (imageInput) {
+            imageInput.value = "";
+        }
 
 
         showToast(
@@ -601,15 +696,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function attachPostEvents(post) {
 
+        if (!post) return;
+
+
         const likeButton =
             post.querySelector(".like-btn");
 
         const saveButton =
             post.querySelector(".save-btn");
 
+        const commentButton =
+            post.querySelector(".comment-btn");
+
+        const shareButton =
+            post.querySelector(".share-btn");
+
         const commentInput =
             post.querySelector(".comment-box input");
 
+        const likeCount =
+            post.querySelector(".like-count");
+
+        const commentCount =
+            post.querySelector(".comment-count");
+
+
+        /* LIKE */
 
         if (likeButton) {
 
@@ -617,35 +729,39 @@ document.addEventListener("DOMContentLoaded", () => {
                 "click",
                 () => {
 
-                    likeButton.classList.toggle("liked");
+                    const liked =
+                        likeButton.classList.toggle("liked");
 
-                    const icon =
-                        likeButton.firstChild;
+                    likeButton.innerHTML =
+                        liked
+                            ? `♥ <span>إعجاب</span>`
+                            : `♡ <span>إعجاب</span>`;
 
-                    if (
-                        likeButton.classList.contains("liked")
-                    ) {
 
-                        likeButton.innerHTML =
-                            `♥ <span>إعجاب</span>`;
+                    if (likeCount) {
 
-                        showToast(
-                            "تم الإعجاب بالمنشور ❤️",
-                            "♥"
-                        );
-
-                    } else {
-
-                        likeButton.innerHTML =
-                            `♡ <span>إعجاب</span>`;
+                        likeCount.textContent =
+                            liked
+                                ? "❤️ 1 إعجاب"
+                                : "❤️ 0 إعجاب";
 
                     }
+
+
+                    showToast(
+                        liked
+                            ? "تم الإعجاب بالمنشور ❤️"
+                            : "تم إلغاء الإعجاب",
+                        liked ? "♥" : "♡"
+                    );
 
                 }
             );
 
         }
 
+
+        /* SAVE */
 
         if (saveButton) {
 
@@ -653,27 +769,39 @@ document.addEventListener("DOMContentLoaded", () => {
                 "click",
                 () => {
 
-                    saveButton.classList.toggle(
-                        "saved"
+                    const saved =
+                        saveButton.classList.toggle("saved");
+
+
+                    showToast(
+                        saved
+                            ? "تم حفظ المنشور 🔖"
+                            : "تم إلغاء حفظ المنشور",
+                        saved ? "🔖" : "✓"
                     );
 
-                    if (
-                        saveButton.classList.contains(
-                            "saved"
-                        )
-                    ) {
+                }
+            );
 
-                        showToast(
-                            "تم حفظ المنشور 🔖",
-                            "🔖"
-                        );
+        }
 
-                    } else {
 
-                        showToast(
-                            "تم إلغاء حفظ المنشور",
-                            "✓"
-                        );
+        /* COMMENT BUTTON */
+
+        if (commentButton) {
+
+            commentButton.addEventListener(
+                "click",
+                () => {
+
+                    if (commentInput) {
+
+                        commentInput.focus();
+
+                        commentInput.scrollIntoView({
+                            behavior: "smooth",
+                            block: "center"
+                        });
 
                     }
 
@@ -682,6 +810,75 @@ document.addEventListener("DOMContentLoaded", () => {
 
         }
 
+
+        /* SHARE */
+
+        if (shareButton) {
+
+            shareButton.addEventListener(
+                "click",
+                async () => {
+
+                    const shareText =
+                        "شاهد هذا المنشور على Connect";
+
+                    if (
+                        navigator.share
+                    ) {
+
+                        try {
+
+                            await navigator.share({
+                                title: "Connect",
+                                text: shareText,
+                                url: window.location.href
+                            });
+
+                        } catch (error) {
+
+                            if (
+                                error &&
+                                error.name !== "AbortError"
+                            ) {
+                                showToast(
+                                    "تعذر فتح المشاركة",
+                                    "⚠️"
+                                );
+                            }
+
+                        }
+
+                    } else {
+
+                        try {
+
+                            await navigator.clipboard.writeText(
+                                window.location.href
+                            );
+
+                            showToast(
+                                "تم نسخ رابط المنشور 🔗",
+                                "✓"
+                            );
+
+                        } catch (error) {
+
+                            showToast(
+                                "تم الضغط على المشاركة",
+                                "↗️"
+                            );
+
+                        }
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        /* COMMENT */
 
         if (commentInput) {
 
@@ -694,251 +891,16 @@ document.addEventListener("DOMContentLoaded", () => {
                         commentInput.value.trim()
                     ) {
 
+                        event.preventDefault();
+
                         const comment =
                             commentInput.value.trim();
 
                         commentInput.value = "";
 
-                        showToast(
-                            "تم إضافة تعليق 💬",
-                            "💬"
-                        );
 
-                    }
+                        if (commentCount) {
 
-                }
-            );
-
-        }
-
-    }
-
-
-    document
-        .querySelectorAll(".post-card")
-        .forEach(post => {
-
-            attachPostEvents(post);
-
-        });
-
-
-    /* =====================================================
-       FOLLOW BUTTONS
-    ===================================================== */
-
-    document
-        .querySelectorAll(".follow-btn")
-        .forEach(button => {
-
-            button.addEventListener(
-                "click",
-                () => {
-
-                    const isFollowing =
-                        button.dataset.following === "true";
-
-
-                    if (isFollowing) {
-
-                        button.textContent =
-                            "متابعة";
-
-                        button.dataset.following =
-                            "false";
-
-                    } else {
-
-                        button.textContent =
-                            "✓ متابع";
-
-                        button.dataset.following =
-                            "true";
-
-                        showToast(
-                            "تمت المتابعة بنجاح 👥",
-                            "✓"
-                        );
-
-                    }
-
-                }
-            );
-
-        });
-
-
-    /* =====================================================
-       DARK MODE
-    ===================================================== */
-
-    function setDarkMode(enabled) {
-
-        document.body.classList.toggle(
-            "dark",
-            enabled
-        );
-
-        if (darkModeSwitch) {
-            darkModeSwitch.checked = enabled;
-        }
-
-        if (themeBtn) {
-
-            themeBtn.textContent =
-                enabled ? "☀️" : "🌙";
-
-        }
-
-        localStorage.setItem(
-            "connect_dark_mode",
-            enabled ? "true" : "false"
-        );
-
-    }
-
-
-    const savedTheme =
-        localStorage.getItem(
-            "connect_dark_mode"
-        );
-
-    if (savedTheme === "true") {
-
-        setDarkMode(true);
-
-    }
-
-
-    if (themeBtn) {
-
-        themeBtn.addEventListener(
-            "click",
-            () => {
-
-                const enabled =
-                    !document.body.classList.contains(
-                        "dark"
-                    );
-
-                setDarkMode(enabled);
-
-            }
-        );
-
-    }
-
-
-    if (darkModeSwitch) {
-
-        darkModeSwitch.addEventListener(
-            "change",
-            () => {
-
-                setDarkMode(
-                    darkModeSwitch.checked
-                );
-
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       NOTIFICATION PANEL
-    ===================================================== */
-
-    if (notificationBtn) {
-
-        notificationBtn.addEventListener(
-            "click",
-            event => {
-
-                event.stopPropagation();
-
-                notificationPanel.classList.toggle(
-                    "show"
-                );
-
-            }
-        );
-
-    }
-
-
-    if (closeNotificationPanel) {
-
-        closeNotificationPanel.addEventListener(
-            "click",
-            () => {
-
-                notificationPanel.classList.remove(
-                    "show"
-                );
-
-            }
-        );
-
-    }
-
-
-    document.addEventListener(
-        "click",
-        event => {
-
-            if (
-                notificationPanel &&
-                notificationPanel.classList.contains("show") &&
-                !notificationPanel.contains(event.target) &&
-                !notificationBtn.contains(event.target)
-            ) {
-
-                notificationPanel.classList.remove(
-                    "show"
-                );
-
-            }
-
-        }
-    );
-
-
-    /* =====================================================
-       MARK NOTIFICATIONS
-    ===================================================== */
-
-    if (markNotifications) {
-
-        markNotifications.addEventListener(
-            "click",
-            () => {
-
-                document
-                    .querySelectorAll(
-                        ".notification-item.unread"
-                    )
-                    .forEach(item => {
-
-                        item.classList.remove(
-                            "unread"
-                        );
-
-                    });
-
-
-                const badges =
-                    document.querySelectorAll(
-                        ".notification-badge, .nav-count"
-                    );
-
-
-                badges.forEach(badge => {
-
-                    badge.style.display = "none";
-
-                });
-
-
-                showToast(
-                    "تم تحديد الإشعا    
+                            const current =
+                                parseInt(
+                                    commentCount.

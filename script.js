@@ -5,1177 +5,999 @@
 
 document.addEventListener("DOMContentLoaded", () => {
 
-  /* =======================================================
-     ELEMENTS
-  ======================================================= */
+    /* =====================================================
+       ELEMENTS
+    ===================================================== */
 
-  const pages = {
-    home: document.getElementById("homePage"),
-    explore: document.getElementById("explorePage"),
-    notifications: document.getElementById("notificationsPage"),
-    messages: document.getElementById("messagesPage"),
-    profile: document.getElementById("profilePage"),
-    settings: document.getElementById("settingsPage")
-  };
+    const pages = {
+        home: document.getElementById("homePage"),
+        explore: document.getElementById("explorePage"),
+        notifications: document.getElementById("notificationsPage"),
+        messages: document.getElementById("messagesPage"),
+        friends: document.getElementById("friendsPage"),
+        saved: document.getElementById("savedPage")
+    };
 
-  const navItems = document.querySelectorAll(
-    ".nav-item[data-page], .mobile-nav-item[data-page]"
-  );
+    const navItems = document.querySelectorAll(".nav-item");
+    const mobileNavItems = document.querySelectorAll(".mobile-nav-item");
 
-  const createModal = document.getElementById("createModal");
-  const createPostBtn = document.getElementById("createPostBtn");
-  const mobileCreateBtn = document.getElementById("mobileCreateBtn");
-  const mobileCreateMain = document.getElementById("mobileCreateMain");
-  const createInput = document.getElementById("createInput");
-  const closeModal = document.getElementById("closeModal");
-  const publishBtn = document.getElementById("publishBtn");
-  const postText = document.getElementById("postText");
+    const postModal = document.getElementById("postModal");
+    const closePostModal = document.getElementById("closePostModal");
 
-  const toast = document.getElementById("toast");
-  const toastText = document.getElementById("toastText");
+    const openCreatePost = document.getElementById("openCreatePost");
+    const sideCreatePost = document.getElementById("sideCreatePost");
+    const mobileCreatePost = document.getElementById("mobileCreatePost");
+    const createStory = document.getElementById("createStory");
 
-  const themeBtn = document.getElementById("themeBtn");
-  const profileBtn = document.getElementById("profileBtn");
-  const messageBtn = document.getElementById("messageBtn");
-  const notificationBtn = document.getElementById("notificationBtn");
+    const postText = document.getElementById("postText");
+    const publishPost = document.getElementById("publishPost");
 
-  let toastTimer = null;
+    const imageInput = document.getElementById("imageInput");
+    const selectedImage = document.getElementById("selectedImage");
+
+    const modalPhotoBtn = document.getElementById("modalPhotoBtn");
+    const modalFeelingBtn = document.getElementById("modalFeelingBtn");
+    const modalLocationBtn = document.getElementById("modalLocationBtn");
+
+    const photoPostBtn = document.getElementById("photoPostBtn");
+    const feelingBtn = document.getElementById("feelingBtn");
+    const liveBtn = document.getElementById("liveBtn");
+
+    const themeBtn = document.getElementById("themeBtn");
+
+    const notificationBtn =
+        document.getElementById("notificationBtn");
+
+    const notificationPanel =
+        document.getElementById("notificationPanel");
+
+    const markNotifications =
+        document.getElementById("markNotifications");
+
+    const globalSearch =
+        document.getElementById("globalSearch");
+
+    const exploreSearch =
+        document.getElementById("exploreSearch");
+
+    const feed =
+        document.getElementById("feed");
+
+    const toast =
+        document.getElementById("toast");
+
+    const toastText =
+        document.getElementById("toastText");
+
+    const toastIcon =
+        document.getElementById("toastIcon");
 
 
-  /* =======================================================
-     NAVIGATION
-  ======================================================= */
+    /* =====================================================
+       PAGE NAVIGATION
+    ===================================================== */
 
-  function showPage(pageName) {
+    function openPage(pageName) {
 
-    if (!pages[pageName]) return;
+        Object.keys(pages).forEach(page => {
 
-    Object.values(pages).forEach(page => {
-      page.classList.remove("active");
-    });
+            if (pages[page]) {
+                pages[page].classList.remove("active-page");
+            }
 
-    pages[pageName].classList.add("active");
+        });
+
+        if (pages[pageName]) {
+            pages[pageName].classList.add("active-page");
+        }
+
+
+        navItems.forEach(item => {
+
+            item.classList.toggle(
+                "active",
+                item.dataset.page === pageName
+            );
+
+        });
+
+
+        mobileNavItems.forEach(item => {
+
+            if (item.dataset.page) {
+
+                item.classList.toggle(
+                    "active",
+                    item.dataset.page === pageName
+                );
+
+            }
+
+        });
+
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
+    }
+
 
     navItems.forEach(item => {
 
-      item.classList.toggle(
-        "active",
-        item.dataset.page === pageName
-      );
+        item.addEventListener("click", () => {
+
+            const page = item.dataset.page;
+
+            if (page) {
+                openPage(page);
+            }
+
+        });
 
     });
 
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    });
-  }
 
+    mobileNavItems.forEach(item => {
 
-  navItems.forEach(item => {
+        item.addEventListener("click", () => {
 
-    item.addEventListener("click", () => {
+            const page = item.dataset.page;
 
-      const pageName = item.dataset.page;
+            if (page) {
+                openPage(page);
+            }
 
-      showPage(pageName);
+        });
 
     });
 
-  });
 
+    /* =====================================================
+       CREATE POST MODAL
+    ===================================================== */
 
-  /* =======================================================
-     TOP BUTTONS
-  ======================================================= */
+    function openPostModal() {
 
-  if (profileBtn) {
+        postModal.classList.add("show");
 
-    profileBtn.addEventListener("click", () => {
+        document.body.style.overflow = "hidden";
 
-      showPage("profile");
-
-    });
-
-  }
-
-
-  if (messageBtn) {
-
-    messageBtn.addEventListener("click", () => {
-
-      showPage("messages");
-
-    });
-
-  }
-
-
-  if (notificationBtn) {
-
-    notificationBtn.addEventListener("click", () => {
-
-      showPage("notifications");
-
-    });
-
-  }
-
-
-  /* =======================================================
-     CREATE POST MODAL
-  ======================================================= */
-
-  function openCreateModal() {
-
-    if (!createModal) return;
-
-    createModal.classList.add("show");
-
-    document.body.style.overflow = "hidden";
-
-    setTimeout(() => {
-
-      if (postText) {
-        postText.focus();
-      }
-
-    }, 150);
-
-  }
-
-
-  function closeCreateModal() {
-
-    if (!createModal) return;
-
-    createModal.classList.remove("show");
-
-    document.body.style.overflow = "";
-
-  }
-
-
-  if (createPostBtn) {
-    createPostBtn.addEventListener(
-      "click",
-      openCreateModal
-    );
-  }
-
-
-  if (mobileCreateBtn) {
-    mobileCreateBtn.addEventListener(
-      "click",
-      openCreateModal
-    );
-  }
-
-
-  if (mobileCreateMain) {
-    mobileCreateMain.addEventListener(
-      "click",
-      openCreateModal
-    );
-  }
-
-
-  if (createInput) {
-    createInput.addEventListener(
-      "click",
-      openCreateModal
-    );
-  }
-
-
-  if (closeModal) {
-
-    closeModal.addEventListener(
-      "click",
-      closeCreateModal
-    );
-
-  }
-
-
-  if (createModal) {
-
-    createModal.addEventListener("click", event => {
-
-      if (event.target === createModal) {
-
-        closeCreateModal();
-
-      }
-
-    });
-
-  }
-
-
-  document.addEventListener("keydown", event => {
-
-    if (event.key === "Escape") {
-
-      closeCreateModal();
-
-    }
-
-  });
-
-
-  /* =======================================================
-     CREATE POST
-  ======================================================= */
-
-  if (publishBtn) {
-
-    publishBtn.addEventListener(
-      "click",
-      createPost
-    );
-
-  }
-
-
-  function createPost() {
-
-    const text = postText.value.trim();
-
-    if (!text) {
-
-      showToast(
-        "Écrivez quelque chose avant de publier."
-      );
-
-      postText.focus();
-
-      return;
+        setTimeout(() => {
+            postText.focus();
+        }, 100);
 
     }
 
 
-    const feed = document.getElementById("feed");
+    function closeModal() {
 
-    if (!feed) return;
+        postModal.classList.remove("show");
 
+        document.body.style.overflow = "";
 
-    const article = document.createElement("article");
+    }
 
-    article.className = "post";
 
+    if (openCreatePost) {
+        openCreatePost.addEventListener(
+            "click",
+            openPostModal
+        );
+    }
 
-    article.innerHTML = `
 
-      <div class="post-header">
+    if (sideCreatePost) {
+        sideCreatePost.addEventListener(
+            "click",
+            openPostModal
+        );
+    }
 
-        <div class="post-user-avatar">
-          K
-        </div>
 
-        <div class="post-user-info">
+    if (mobileCreatePost) {
+        mobileCreatePost.addEventListener(
+            "click",
+            openPostModal
+        );
+    }
 
-          <strong>Khalil</strong>
 
-          <span>
-            @khalil · À l'instant
-          </span>
+    if (createStory) {
 
-        </div>
+        createStory.addEventListener("click", () => {
 
-        <button class="post-more">
-          ⋯
-        </button>
-
-      </div>
-
-
-      <div class="post-content">
-
-        <p></p>
-
-      </div>
-
-
-      <div class="post-stats">
-
-        <span>
-          ❤️ 0 réactions
-        </span>
-
-        <span>
-          0 commentaires
-        </span>
-
-      </div>
-
-
-      <div class="post-actions">
-
-        <button class="like-btn">
-
-          ♡
-
-          <span>
-            J'aime
-          </span>
-
-        </button>
-
-
-        <button class="comment-btn">
-
-          ◌
-
-          <span>
-            Commenter
-          </span>
-
-        </button>
-
-
-        <button class="share-btn">
-
-          ↗
-
-          <span>
-            Partager
-          </span>
-
-        </button>
-
-      </div>
-
-
-      <div class="comment-area">
-
-        <div class="comment-avatar">
-          K
-        </div>
-
-        <input
-          type="text"
-          placeholder="Écrire un commentaire..."
-        >
-
-      </div>
-
-    `;
-
-
-    const paragraph =
-      article.querySelector(".post-content p");
-
-    paragraph.textContent = text;
-
-
-    feed.prepend(article);
-
-
-    postText.value = "";
-
-    closeCreateModal();
-
-    setupPost(article);
-
-    showToast(
-      "Votre publication a été publiée."
-    );
-
-  }
-
-
-  /* =======================================================
-     LIKE SYSTEM
-  ======================================================= */
-
-  function setupPost(post) {
-
-    const likeBtn =
-      post.querySelector(".like-btn");
-
-    const stats =
-      post.querySelector(".post-stats span");
-
-    if (likeBtn) {
-
-      likeBtn.addEventListener(
-        "click",
-        () => {
-
-          const liked =
-            likeBtn.classList.toggle("liked");
-
-          const icon =
-            likeBtn.firstChild;
-
-          if (liked) {
-
-            likeBtn.innerHTML =
-              `♥ <span>J'aime</span>`;
-
-            updateReactionCount(
-              stats,
-              1
+            showToast(
+                "إضافة Story جديدة قريباً",
+                "📸"
             );
 
-          } else {
-
-            likeBtn.innerHTML =
-              `♡ <span>J'aime</span>`;
-
-            updateReactionCount(
-              stats,
-              -1
-            );
-
-          }
-
-        }
-      );
+        });
 
     }
 
 
-    const commentBtn =
-      post.querySelector(".comment-btn");
+    if (closePostModal) {
 
-    const commentInput =
-      post.querySelector(".comment-area input");
+        closePostModal.addEventListener(
+            "click",
+            closeModal
+        );
 
-
-    if (commentBtn && commentInput) {
-
-      commentBtn.addEventListener(
-        "click",
-        () => {
-
-          commentInput.focus();
-
-        }
-      );
+    }
 
 
-      commentInput.addEventListener(
+    if (postModal) {
+
+        postModal.addEventListener(
+            "click",
+            event => {
+
+                if (
+                    event.target === postModal
+                ) {
+                    closeModal();
+                }
+
+            }
+        );
+
+    }
+
+
+    document.addEventListener(
         "keydown",
         event => {
 
-          if (
-            event.key === "Enter" &&
-            commentInput.value.trim()
-          ) {
+            if (event.key === "Escape") {
 
-            addComment(
-              post,
-              commentInput.value.trim()
-            );
+                closeModal();
 
-            commentInput.value = "";
+                notificationPanel?.classList.remove(
+                    "show"
+                );
 
-          }
+            }
 
         }
-      );
-
-    }
-
-
-    const shareBtn =
-      post.querySelector(".share-btn");
-
-
-    if (shareBtn) {
-
-      shareBtn.addEventListener(
-        "click",
-        () => {
-
-          sharePost(post);
-
-        }
-      );
-
-    }
-
-  }
-
-
-  function updateReactionCount(
-    statsElement,
-    amount
-  ) {
-
-    if (!statsElement) return;
-
-
-    const currentText =
-      statsElement.textContent;
-
-
-    const match =
-      currentText.match(/\d+/);
-
-
-    let count =
-      match
-        ? parseInt(match[0])
-        : 0;
-
-
-    count += amount;
-
-
-    if (count < 0) {
-      count = 0;
-    }
-
-
-    statsElement.textContent =
-      `❤️ ${count} réactions`;
-
-  }
-
-
-  /* =======================================================
-     COMMENTS
-  ======================================================= */
-
-  function addComment(post, text) {
-
-    const commentArea =
-      post.querySelector(".comment-area");
-
-
-    const comment =
-      document.createElement("div");
-
-
-    comment.style.display = "flex";
-    comment.style.gap = "8px";
-    comment.style.marginTop = "9px";
-    comment.style.padding = "8px 10px";
-    comment.style.borderRadius = "10px";
-    comment.style.background =
-      "var(--surface-2)";
-
-
-    comment.innerHTML = `
-
-      <div class="comment-avatar">
-        K
-      </div>
-
-      <div>
-
-        <strong
-          style="
-            display:block;
-            font-size:11px;
-          "
-        >
-          Khalil
-        </strong>
-
-        <span
-          style="
-            color:var(--muted);
-            font-size:11px;
-          "
-        ></span>
-
-      </div>
-
-    `;
-
-
-    comment.querySelector(
-      "span"
-    ).textContent = text;
-
-
-    commentArea.after(comment);
-
-
-    showToast(
-      "Commentaire ajouté."
     );
 
-  }
 
+    /* =====================================================
+       IMAGE UPLOAD
+    ===================================================== */
 
-  /* =======================================================
-     SHARE
-  ======================================================= */
+    if (modalPhotoBtn && imageInput) {
 
-  async function sharePost(post) {
+        modalPhotoBtn.addEventListener(
+            "click",
+            () => {
 
-    const text =
-      post.querySelector(
-        ".post-content p"
-      )?.textContent ||
-      "Publication Connect";
+                imageInput.click();
 
-
-    if (
-      navigator.share
-    ) {
-
-      try {
-
-        await navigator.share({
-          title: "Connect",
-          text: text
-        });
-
-        showToast(
-          "Publication partagée."
+            }
         );
 
-      } catch (error) {
+    }
 
-        // utilisateur a annulé
 
-      }
+    if (photoPostBtn && imageInput) {
 
-      return;
+        photoPostBtn.addEventListener(
+            "click",
+            () => {
+
+                openPostModal();
+
+                setTimeout(() => {
+                    imageInput.click();
+                }, 150);
+
+            }
+        );
 
     }
 
 
-    try {
+    if (imageInput) {
 
-      await navigator.clipboard.writeText(
-        text
-      );
+        imageInput.addEventListener(
+            "change",
+            event => {
 
-      showToast(
-        "Texte copié dans le presse-papiers."
-      );
+                const file =
+                    event.target.files[0];
 
-    } catch (error) {
+                if (!file) return;
 
-      showToast(
-        "Impossible de partager cette publication."
-      );
+                if (!file.type.startsWith("image/")) {
+
+                    showToast(
+                        "اختار صورة فقط",
+                        "⚠️"
+                    );
+
+                    return;
+                }
+
+
+                const reader =
+                    new FileReader();
+
+
+                reader.onload = function(e) {
+
+                    selectedImage.style.backgroundImage =
+                        `url("${e.target.result}")`;
+
+                    selectedImage.classList.add(
+                        "show"
+                    );
+
+                    selectedImage.dataset.image =
+                        e.target.result;
+
+                };
+
+
+                reader.readAsDataURL(file);
+
+            }
+        );
 
     }
 
-  }
+
+    /* =====================================================
+       FEELING BUTTON
+    ===================================================== */
+
+    if (feelingBtn) {
+
+        feelingBtn.addEventListener(
+            "click",
+            () => {
+
+                openPostModal();
+
+                setTimeout(() => {
+
+                    postText.value =
+                        "أشعر اليوم بـ 😊";
+
+                    postText.focus();
+
+                }, 100);
+
+            }
+        );
+
+    }
 
 
-  /* =======================================================
-     INITIALIZE EXISTING POSTS
-  ======================================================= */
+    if (modalFeelingBtn) {
 
-  document
-    .querySelectorAll(".post")
-    .forEach(post => {
+        modalFeelingBtn.addEventListener(
+            "click",
+            () => {
 
-      setupPost(post);
+                const feelings = [
+                    "😊 سعيد",
+                    "🔥 متحمس",
+                    "💪 قوي",
+                    "🚀 متفائل",
+                    "❤️ ممتن",
+                    "😎 رائع"
+                ];
 
-    });
+                const randomFeeling =
+                    feelings[
+                        Math.floor(
+                            Math.random() *
+                            feelings.length
+                        )
+                    ];
+
+                postText.value =
+                    `أشعر اليوم بـ ${randomFeeling}`;
+
+                postText.focus();
+
+            }
+        );
+
+    }
 
 
-  /* =======================================================
-     FOLLOW BUTTONS
-  ======================================================= */
+    /* =====================================================
+       LOCATION
+    ===================================================== */
 
-  document
-    .querySelectorAll(
-      ".follow-btn, .follow-back"
-    )
-    .forEach(button => {
+    if (modalLocationBtn) {
 
-      button.addEventListener(
-        "click",
-        () => {
+        modalLocationBtn.addEventListener(
+            "click",
+            () => {
 
-          const following =
-            button.dataset.following === "true";
+                postText.value +=
+                    " 📍 تونس";
+
+                postText.focus();
+
+            }
+        );
+
+    }
 
 
-          if (following) {
+    /* =====================================================
+       PUBLISH POST
+    ===================================================== */
 
-            button.dataset.following =
-              "false";
+    if (publishPost) {
 
-            button.textContent =
-              "Suivre";
+        publishPost.addEventListener(
+            "click",
+            publishNewPost
+        );
+
+    }
+
+
+    function publishNewPost() {
+
+        const text =
+            postText.value.trim();
+
+        const image =
+            selectedImage.dataset.image || "";
+
+
+        if (!text && !image) {
 
             showToast(
-              "Vous ne suivez plus cette personne."
+                "اكتب حاجة قبل ما تنشر",
+                "⚠️"
             );
 
-          } else {
+            postText.focus();
 
-            button.dataset.following =
-              "true";
-
-            button.textContent =
-              "Suivi ✓";
-
-            showToast(
-              "Vous suivez maintenant cette personne."
-            );
-
-          }
-
-        }
-      );
-
-    });
-
-
-  /* =======================================================
-     SEARCH
-  ======================================================= */
-
-  const searchInput =
-    document.getElementById(
-      "searchInput"
-    );
-
-
-  if (searchInput) {
-
-    searchInput.addEventListener(
-      "input",
-      () => {
-
-        const query =
-          searchInput.value
-            .trim()
-            .toLowerCase();
-
-
-        if (!query) {
-
-          showPage("home");
-
-          return;
+            return;
 
         }
 
 
-        const posts =
-          document.querySelectorAll(
-            ".post"
-          );
+        const post =
+            document.createElement("article");
+
+        post.className = "post-card";
+
+        post.dataset.postId =
+            Date.now();
 
 
-        let found = false;
+        let imageHTML = "";
+
+        if (image) {
+
+            imageHTML = `
+                <div
+                    class="user-uploaded-image"
+                    style="
+                        background-image:url('${image}');
+                    "
+                ></div>
+            `;
+
+        }
 
 
-        posts.forEach(post => {
+        post.innerHTML = `
 
-          const text =
-            post.textContent.toLowerCase();
+            <div class="post-header">
+
+                <div class="post-user">
+
+                    <div class="avatar">
+                        K
+                    </div>
+
+                    <div class="post-user-info">
+
+                        <strong>
+                            Khalil Shili
+                        </strong>
+
+                        <span>
+                            الآن · 🌎
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <button class="post-menu">
+                    •••
+                </button>
+
+            </div>
 
 
-          if (text.includes(query)) {
+            ${
+                text
+                ?
+                `
+                <div class="post-content">
+                    <p>${escapeHTML(text)}</p>
+                </div>
+                `
+                :
+                ""
+            }
 
-            post.style.display =
-              "";
 
-            found = true;
+            ${imageHTML}
 
-          } else {
 
-            post.style.display =
-              "none";
+            <div class="post-stats">
 
-          }
+                <span class="likes-number">
+                    ❤️ 0 إعجاب
+                </span>
 
+                <span>
+                    0 تعليق · 0 مشاركة
+                </span>
+
+            </div>
+
+
+            <div class="post-buttons">
+
+                <button
+                    class="post-btn like-btn"
+                >
+                    ♡
+                    <span>إعجاب</span>
+                </button>
+
+                <button
+                    class="post-btn comment-btn"
+                >
+                    💬
+                    <span>تعليق</span>
+                </button>
+
+                <button
+                    class="post-btn share-btn"
+                >
+                    ↗
+                    <span>مشاركة</span>
+                </button>
+
+            </div>
+
+
+            <div class="comments-area">
+
+                <div class="comment-input">
+
+                    <div class="avatar avatar-tiny">
+                        K
+                    </div>
+
+                    <input
+                        type="text"
+                        placeholder="اكتب تعليق..."
+                    >
+
+                    <button>
+                        ➤
+                    </button>
+
+                </div>
+
+            </div>
+
+        `;
+
+
+        feed.prepend(post);
+
+
+        attachPostEvents(post);
+
+
+        savePostLocally({
+            id: post.dataset.postId,
+            text,
+            image,
+            time: new Date().toISOString()
         });
 
 
-        showPage("home");
+        postText.value = "";
+
+        selectedImage.style.backgroundImage =
+            "";
+
+        selectedImage.classList.remove(
+            "show"
+        );
+
+        delete selectedImage.dataset.image;
+
+        imageInput.value = "";
 
 
-        if (found) {
-
-          showToast(
-            `Résultats pour « ${query} »`
-          );
-
-        } else {
-
-          showToast(
-            "Aucun résultat trouvé."
-          );
-
-        }
-
-      }
-    );
-
-  }
+        closeModal();
 
 
-  /* =======================================================
-     DARK MODE / LIGHT MODE
-  ======================================================= */
-
-  let lightMode =
-    localStorage.getItem(
-      "connect_theme"
-    ) === "light";
-
-
-  function applyTheme() {
-
-    if (lightMode) {
-
-      document.body.classList.add(
-        "light-mode"
-      );
-
-      themeBtn.textContent = "☀";
-
-    } else {
-
-      document.body.classList.remove(
-        "light-mode"
-      );
-
-      themeBtn.textContent = "◐";
+        showToast(
+            "تم نشر المنشور بنجاح 🎉",
+            "✓"
+        );
 
     }
 
-  }
+
+    /* =====================================================
+       POST EVENTS
+    ===================================================== */
+
+    function attachPostEvents(post) {
+
+        const likeBtn =
+            post.querySelector(".like-btn");
+
+        const commentBtn =
+            post.querySelector(".comment-btn");
+
+        const shareBtn =
+            post.querySelector(".share-btn");
+
+        const commentArea =
+            post.querySelector(".comments-area");
+
+        const commentInput =
+            post.querySelector(
+                ".comment-input input"
+            );
+
+        const commentSend =
+            post.querySelector(
+                ".comment-input button"
+            );
 
 
-  if (themeBtn) {
+        /* LIKE */
 
-    themeBtn.addEventListener(
-      "click",
-      () => {
+        if (likeBtn) {
 
-        lightMode =
-          !lightMode;
+            likeBtn.addEventListener(
+                "click",
+                () => {
+
+                    const isLiked =
+                        likeBtn.classList.toggle(
+                            "liked"
+                        );
+
+
+                    const stats =
+                        post.querySelector(
+                            ".likes-number"
+                        );
+
+
+                    if (!stats) return;
+
+
+                    const currentText =
+                        stats.textContent;
+
+                    const match =
+                        currentText.match(
+                            /\d+/
+                        );
+
+                    let count =
+                        match
+                        ?
+                        Number(match[0])
+                        :
+                        0;
+
+
+                    if (isLiked) {
+
+                        count++;
+
+                        likeBtn.innerHTML =
+                            `
+                            ❤️
+                            <span>إعجاب</span>
+                            `;
+
+                    } else {
+
+                        count =
+                            Math.max(
+                                0,
+                                count - 1
+                            );
+
+                        likeBtn.innerHTML =
+                            `
+                            ♡
+                            <span>إعجاب</span>
+                            `;
+
+                    }
+
+
+                    stats.textContent =
+                        `❤️ ${count} إعجاب`;
+
+                }
+            );
+
+        }
+
+
+        /* COMMENT */
+
+        if (commentBtn && commentArea) {
+
+            commentBtn.addEventListener(
+                "click",
+                () => {
+
+                    commentArea.classList.toggle(
+                        "show"
+                    );
+
+
+                    if (
+                        commentArea.classList.contains(
+                            "show"
+                        )
+                    ) {
+
+                        commentInput?.focus();
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        /* SEND COMMENT */
+
+        if (
+            commentSend &&
+            commentInput
+        ) {
+
+            commentSend.addEventListener(
+                "click",
+                () => {
+
+                    addComment(
+                        post,
+                        commentInput
+                    );
+
+                }
+            );
+
+
+            commentInput.addEventListener(
+                "keydown",
+                event => {
+
+                    if (
+                        event.key === "Enter"
+                    ) {
+
+                        event.preventDefault();
+
+                        addComment(
+                            post,
+                            commentInput
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        /* SHARE */
+
+        if (shareBtn) {
+
+            shareBtn.addEventListener(
+                "click",
+                () => {
+
+                    const shareData = {
+                        title: "Connect",
+                        text:
+                            "شوف المنشور هذا على Connect"
+                    };
+
+
+                    if (
+                        navigator.share
+                    ) {
+
+                        navigator.share(
+                            shareData
+                        ).catch(() => {});
+
+                    } else {
+
+                        showToast(
+                            "تم نسخ رابط المنشور",
+                            "🔗"
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        /* POST MENU */
+
+        const menu =
+            post.querySelector(".post-menu");
+
+        if (menu) {
+
+            menu.addEventListener(
+                "click",
+                () => {
+
+                    showToast(
+                        "خيارات المنشور",
+                        "•••"
+                    );
+
+                }
+            );
+
+        }
+
+    }
+
+
+    function addComment(
+        post,
+        input
+    ) {
+
+        const text =
+            input.value.trim();
+
+        if (!text) return;
+
+
+        const commentsArea =
+            post.querySelector(
+                ".comments-area"
+            );
+
+
+        const comment =
+            document.createElement("div");
+
+        comment.className = "comment";
+
+
+        comment.innerHTML = `
+
+            <div class="avatar avatar-tiny">
+                K
+            </div>
+
+            <div class="comment-bubble">
+
+                <strong>
+                    Khalil
+                </strong>
+
+                <p>
+                    ${escapeHTML(text)}
+                </p>
+
+            </div>
+
+        `;
+
+
+        const inputBox =
+            commentsArea.querySelector(
+                ".comment-input"
+            );
+
+
+        commentsArea.insertBefore(
+            comment,
+            inputBox
+        );
+
+
+        input.value = "";
+
+
+        showToast(
+            "تم إضافة التعليق 💬",
+            "✓"
+        );
+
+    }
+
+
+    document
+        .querySelectorAll(".post-card")
+        .forEach(attachPostEvents);
+
+
+    /* =====================================================
+       SAVE POSTS
+    ===================================================== */
+
+    function savePostLocally(post) {
+
+        let posts = [];
+
+        try {
+
+            posts =
+                JSON.parse(
+                    localStorage.getItem(
+                        "connect_posts"
+                    )
+                ) || [];
+
+        } catch {
+
+            posts = [];
+
+        }
+
+
+        posts.unshift(post);
 
 
         localStorage.setItem(
-          "connect_theme",
-          lightMode
-            ? "light"
-            : "dark"
+            "connect_posts",
+            JSON.stringify(posts.slice(0, 30))
         );
-
-
-        applyTheme();
-
-
-        showToast(
-          lightMode
-            ? "Mode clair activé."
-            : "Mode sombre activé."
-        );
-
-      }
-    );
-
-  }
-
-
-  applyTheme();
-
-
-  /* =======================================================
-     NOTIFICATION BUTTON
-  ======================================================= */
-
-  const notificationDot =
-    document.querySelector(
-      ".notification-dot"
-    );
-
-
-  if (notificationBtn) {
-
-    notificationBtn.addEventListener(
-      "dblclick",
-      () => {
-
-        if (notificationDot) {
-
-          notificationDot.style.display =
-            "none";
-
-        }
-
-        showToast(
-          "Notifications marquées comme lues."
-        );
-
-      }
-    );
-
-  }
-
-
-  /* =======================================================
-     MESSAGE CONVERSATIONS
-  ======================================================= */
-
-  document
-    .querySelectorAll(".conversation")
-    .forEach(conversation => {
-
-      conversation.addEventListener(
-        "click",
-        () => {
-
-          document
-            .querySelectorAll(
-              ".conversation"
-            )
-            .forEach(item => {
-
-              item.classList.remove(
-                "active"
-              );
-
-            });
-
-
-          conversation.classList.add(
-            "active"
-          );
-
-
-          const name =
-            conversation.querySelector(
-              "strong"
-            )?.textContent ||
-            "Conversation";
-
-
-          showToast(
-            `Conversation avec ${name}`
-          );
-
-        }
-      );
-
-    });
-
-
-  /* =======================================================
-     PROFILE TABS
-  ======================================================= */
-
-  document
-    .querySelectorAll(
-      ".profile-tabs button"
-    )
-    .forEach(button => {
-
-      button.addEventListener(
-        "click",
-        () => {
-
-          document
-            .querySelectorAll(
-              ".profile-tabs button"
-            )
-            .forEach(tab => {
-
-              tab.classList.remove(
-                "active"
-              );
-
-            });
-
-
-          button.classList.add(
-            "active"
-          );
-
-
-          showToast(
-            button.textContent.trim()
-          );
-
-        }
-      );
-
-    });
-
-
-  /* =======================================================
-     SETTINGS
-  ======================================================= */
-
-  document
-    .querySelectorAll(
-      ".setting-item"
-    )
-    .forEach(item => {
-
-      item.addEventListener(
-        "click",
-        () => {
-
-          const title =
-            item.querySelector(
-              "strong"
-            )?.textContent ||
-            "Paramètres";
-
-
-          showToast(
-            `${title} — bientôt disponible.`
-          );
-
-        }
-      );
-
-    });
-
-
-  /* =======================================================
-     MODAL TOOLS
-  ======================================================= */
-
-  document
-    .querySelectorAll(
-      ".modal-tools button"
-    )
-    .forEach(button => {
-
-      button.addEventListener(
-        "click",
-        () => {
-
-          const text =
-            button.textContent.trim();
-
-
-          showToast(
-            `${text} — fonction bientôt disponible.`
-          );
-
-        }
-      );
-
-    });
-
-
-  /* =======================================================
-     POST MORE BUTTON
-  ======================================================= */
-
-  document
-    .querySelectorAll(
-      ".post-more"
-    )
-    .forEach(button => {
-
-      button.addEventListener(
-        "click",
-        () => {
-
-          showToast(
-            "Options de publication bientôt disponibles."
-          );
-
-        }
-      );
-
-    });
-
-
-  /* =======================================================
-     TOAST SYSTEM
-  ======================================================= */
-
-  function showToast(message) {
-
-    if (!toast) return;
-
-
-    if (toastTimer) {
-
-      clearTimeout(
-        toastTimer
-      );
 
     }
 
 
-    if (toastText) {
+    /* =====================================================
+       SEARCH
+    ===================================================== */
 
-      toastText.textContent =
-        message;
+    if (globalSearch) {
 
-    }
+        globalSearch.addEventListener(
+            "input",
+            () => {
 
-
-    toast.classList.add(
-      "show"
-    );
-
-
-    toastTimer =
-      setTimeout(() => {
-
-        toast.classList.remove(
-          "show"
-        );
-
-      }, 2800);
-
-  }
-
-
-  /* =======================================================
-     ESCAPE KEY
-  ======================================================= */
-
-  document.addEventListener(
-    "keydown",
-    event => {
-
-      if (
-        event.key === "Escape"
-      ) {
-
-        closeCreateModal();
-
-      }
-
-    }
-  );
-
-
-  /* =======================================================
-     MOBILE CREATE BUTTON
-  ======================================================= */
-
-  if (mobileCreateMain) {
-
-    mobileCreateMain.addEventListener(
-      "click",
-      () => {
-
-        openCreateModal();
-
-      }
-    );
-
-  }
-
-
-  /* =======================================================
-     INITIAL STATE
-  ======================================================= */
-
-  showPage("home");
-
-
-  console.log(
-    "Connect Social Network initialized successfully."
-  );
-
-});
+                const query =
+                    globalSearch.value
+                        .trim()
+            

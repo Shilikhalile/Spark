@@ -17,7 +17,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const mobileMenuBtn = document.getElementById("mobileMenuBtn");
 
     const postModal = document.getElementById("postModal");
+    const modalOverlay = document.getElementById("modalOverlay");
     const closePostModal = document.getElementById("closePostModal");
+
     const openCreatePost = document.getElementById("openCreatePost");
     const sideCreatePost = document.getElementById("sideCreatePost");
     const mobileCreatePost = document.getElementById("mobileCreatePost");
@@ -38,23 +40,45 @@ document.addEventListener("DOMContentLoaded", () => {
     const liveBtn = document.getElementById("liveBtn");
 
     const themeBtn = document.getElementById("themeBtn");
-    const darkModeSwitch = document.getElementById("darkModeSwitch");
 
-    const notificationBtn = document.getElementById("notificationBtn");
-    const notificationPanel = document.getElementById("notificationPanel");
-    const closeNotificationPanel = document.getElementById("closeNotificationPanel");
-    const markNotifications = document.getElementById("markNotifications");
+    const darkModeToggle =
+        document.getElementById("darkModeToggle");
 
-    const globalSearch = document.getElementById("globalSearch");
-    const exploreSearch = document.getElementById("exploreSearch");
+    const darkModeSwitch =
+        document.getElementById("darkModeSwitch");
 
-    const feed = document.getElementById("feed");
+    const notificationBtn =
+        document.getElementById("notificationBtn");
 
-    const toast = document.getElementById("toast");
-    const toastText = document.getElementById("toastText");
-    const toastIcon = document.getElementById("toastIcon");
+    const notificationPanel =
+        document.getElementById("notificationPanel");
 
-    const viewAllStories = document.getElementById("viewAllStories");
+    const closeNotificationPanel =
+        document.getElementById("closeNotificationPanel");
+
+    const markNotifications =
+        document.getElementById("markNotifications");
+
+    const globalSearch =
+        document.getElementById("globalSearch");
+
+    const exploreSearch =
+        document.getElementById("exploreSearch");
+
+    const feed =
+        document.getElementById("feed");
+
+    const toast =
+        document.getElementById("toast");
+
+    const toastText =
+        document.getElementById("toastText");
+
+    const toastIcon =
+        document.getElementById("toastIcon");
+
+    const viewAllStories =
+        document.getElementById("viewAllStories");
 
 
     /* =====================================================
@@ -97,34 +121,39 @@ document.addEventListener("DOMContentLoaded", () => {
             page.classList.remove("active");
         });
 
-        const targetPage = document.getElementById(pageId);
+        const targetPage =
+            document.getElementById(pageId);
 
         if (targetPage) {
             targetPage.classList.add("active");
         }
 
         navItems.forEach(item => {
+
             item.classList.toggle(
                 "active",
                 item.dataset.page === pageId
             );
+
         });
 
         mobileNavItems.forEach(item => {
+
             item.classList.toggle(
                 "active",
                 item.dataset.page === pageId
             );
-        });
 
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
         });
 
         if (sidebar) {
             sidebar.classList.remove("open");
         }
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
     }
 
 
@@ -132,7 +161,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         item.addEventListener("click", () => {
 
-            const pageId = item.dataset.page;
+            const pageId =
+                item.dataset.page;
 
             if (pageId) {
                 openPage(pageId);
@@ -147,7 +177,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         item.addEventListener("click", () => {
 
-            const pageId = item.dataset.page;
+            const pageId =
+                item.dataset.page;
 
             if (pageId) {
                 openPage(pageId);
@@ -177,7 +208,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.addEventListener("click", event => {
 
-        if (!sidebar || !mobileMenuBtn) return;
+        if (!sidebar || !mobileMenuBtn) {
+            return;
+        }
 
         if (
             window.innerWidth <= 800 &&
@@ -194,7 +227,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       POST MODAL
+       CREATE POST MODAL
     ===================================================== */
 
     function openPostModal() {
@@ -202,6 +235,10 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!postModal) return;
 
         postModal.classList.add("show");
+
+        if (modalOverlay) {
+            modalOverlay.classList.add("show");
+        }
 
         document.body.style.overflow = "hidden";
 
@@ -212,42 +249,50 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
         }, 100);
-
     }
 
 
     function closeModal() {
 
-        if (!postModal) return;
+        if (postModal) {
+            postModal.classList.remove("show");
+        }
 
-        postModal.classList.remove("show");
+        if (modalOverlay) {
+            modalOverlay.classList.remove("show");
+        }
 
         document.body.style.overflow = "";
-
     }
 
 
     if (openCreatePost) {
+
         openCreatePost.addEventListener(
             "click",
             openPostModal
         );
+
     }
 
 
     if (sideCreatePost) {
+
         sideCreatePost.addEventListener(
             "click",
             openPostModal
         );
+
     }
 
 
     if (mobileCreatePost) {
+
         mobileCreatePost.addEventListener(
             "click",
             openPostModal
         );
+
     }
 
 
@@ -275,8 +320,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    const modalOverlay = document.querySelector(".modal-overlay");
-
     if (modalOverlay) {
 
         modalOverlay.addEventListener(
@@ -293,23 +336,29 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
+    /* =====================================================
+       ESCAPE KEY
+    ===================================================== */
+
     document.addEventListener("keydown", event => {
 
-        if (event.key === "Escape") {
+        if (event.key !== "Escape") return;
 
-            if (
-                postModal &&
-                postModal.classList.contains("show")
-            ) {
-                closeModal();
-            }
+        if (
+            postModal &&
+            postModal.classList.contains("show")
+        ) {
 
-            if (
-                notificationPanel &&
-                notificationPanel.classList.contains("show")
-            ) {
-                notificationPanel.classList.remove("show");
-            }
+            closeModal();
+
+        }
+
+        if (
+            notificationPanel &&
+            notificationPanel.classList.contains("show")
+        ) {
+
+            notificationPanel.classList.remove("show");
 
         }
 
@@ -339,7 +388,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             setTimeout(() => {
                 imageInput.click();
-            }, 150);
+            }, 200);
 
         });
 
@@ -348,44 +397,49 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (imageInput) {
 
-        imageInput.addEventListener("change", event => {
+        imageInput.addEventListener(
+            "change",
+            event => {
 
-            const file = event.target.files[0];
+                const file =
+                    event.target.files[0];
 
-            if (!file) return;
+                if (!file) return;
 
-            if (!file.type.startsWith("image/")) {
+                if (!file.type.startsWith("image/")) {
 
-                showToast(
-                    "الملف المختار ليس صورة",
-                    "⚠️"
-                );
+                    showToast(
+                        "الملف المختار ليس صورة",
+                        "⚠️"
+                    );
 
-                imageInput.value = "";
+                    imageInput.value = "";
 
-                return;
+                    return;
+                }
+
+                const reader =
+                    new FileReader();
+
+                reader.onload = event => {
+
+                    if (!selectedImage) return;
+
+                    selectedImage.innerHTML = `
+                        <img
+                            src="${event.target.result}"
+                            alt="الصورة المختارة"
+                        >
+                    `;
+
+                    selectedImage.style.display =
+                        "block";
+                };
+
+                reader.readAsDataURL(file);
+
             }
-
-            const reader = new FileReader();
-
-            reader.onload = e => {
-
-                if (!selectedImage) return;
-
-                selectedImage.innerHTML = `
-                    <img
-                        src="${e.target.result}"
-                        alt="الصورة المختارة"
-                    >
-                `;
-
-                selectedImage.style.display = "block";
-
-            };
-
-            reader.readAsDataURL(file);
-
-        });
+        );
 
     }
 
@@ -396,53 +450,61 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (modalFeelingBtn) {
 
-        modalFeelingBtn.addEventListener("click", () => {
+        modalFeelingBtn.addEventListener(
+            "click",
+            () => {
 
-            if (!postText) return;
+                if (!postText) return;
 
-            const feelings = [
-                "😊 سعيد",
-                "❤️ أحب",
-                "🔥 متحمس",
-                "😎 رائع",
-                "🤔 أفكر",
-                "🎉 أحتفل"
-            ];
-
-            const feeling =
-                feelings[
-                    Math.floor(
-                        Math.random() * feelings.length
-                    )
+                const feelings = [
+                    "😊 سعيد",
+                    "❤️ أحب",
+                    "🔥 متحمس",
+                    "😎 رائع",
+                    "🤔 أفكر",
+                    "🎉 أحتفل"
                 ];
 
-            postText.value +=
-                postText.value
-                    ? ` ${feeling}`
-                    : feeling;
+                const randomIndex =
+                    Math.floor(
+                        Math.random() *
+                        feelings.length
+                    );
 
-            postText.focus();
+                const feeling =
+                    feelings[randomIndex];
 
-        });
+                postText.value +=
+                    postText.value
+                        ? ` ${feeling}`
+                        : feeling;
+
+                postText.focus();
+
+            }
+        );
 
     }
 
 
     if (feelingBtn) {
 
-        feelingBtn.addEventListener("click", () => {
+        feelingBtn.addEventListener(
+            "click",
+            () => {
 
-            openPostModal();
+                openPostModal();
 
-            setTimeout(() => {
+                setTimeout(() => {
 
-                if (modalFeelingBtn) {
-                    modalFeelingBtn.click();
-                }
+                    if (modalFeelingBtn) {
+                        modalFeelingBtn.click();
+                    }
 
-            }, 100);
+                }, 100);
 
-        });
+            }
+        );
 
     }
 
@@ -453,20 +515,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (modalLocationBtn) {
 
-        modalLocationBtn.addEventListener("click", () => {
+        modalLocationBtn.addEventListener(
+            "click",
+            () => {
 
-            if (!postText) return;
+                if (!postText) return;
 
-            const locationText = "📍 تونس";
+                const locationText =
+                    "📍 تونس";
 
-            postText.value +=
-                postText.value
-                    ? `\n${locationText}`
-                    : locationText;
+                postText.value +=
+                    postText.value
+                        ? `\n${locationText}`
+                        : locationText;
 
-            postText.focus();
+                postText.focus();
 
-        });
+            }
+        );
 
     }
 
@@ -477,14 +543,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (liveBtn) {
 
-        liveBtn.addEventListener("click", () => {
+        liveBtn.addEventListener(
+            "click",
+            () => {
 
-            showToast(
-                "البث المباشر سيكون متاحاً قريباً 🔴",
-                "🔴"
-            );
+                showToast(
+                    "البث المباشر سيكون متاحاً قريباً 🔴",
+                    "🔴"
+                );
 
-        });
+            }
+        );
 
     }
 
@@ -507,7 +576,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (!feed || !postText) return;
 
-        const text = postText.value.trim();
+        const text =
+            postText.value.trim();
 
         const imageHTML =
             selectedImage
@@ -526,9 +596,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        const post = document.createElement("article");
+        const post =
+            document.createElement("article");
 
-        post.className = "post-card";
+        post.className =
+            "post-card";
 
 
         post.innerHTML = `
@@ -551,7 +623,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 <button
                     class="post-more"
                     type="button"
-                    aria-label="المزيد"
                 >
                     ⋮
                 </button>
@@ -563,7 +634,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 ${
                     text
-                        ? `<p>${escapeHTML(text).replace(/\n/g, "<br>")}</p>`
+                        ? `
+                            <p>
+                                ${escapeHTML(text)
+                                    .replace(/\n/g, "<br>")}
+                            </p>
+                        `
                         : ""
                 }
 
@@ -648,16 +724,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
         feed.prepend(post);
 
-
         closeModal();
-
 
         postText.value = "";
 
+
         if (selectedImage) {
+
             selectedImage.innerHTML = "";
-            selectedImage.style.display = "none";
+
+            selectedImage.style.display =
+                "none";
+
         }
+
 
         if (imageInput) {
             imageInput.value = "";
@@ -681,12 +761,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function escapeHTML(text) {
 
-        const div = document.createElement("div");
+        const div =
+            document.createElement("div");
 
-        div.textContent = text;
+        div.textContent =
+            text;
 
         return div.innerHTML;
-
     }
 
 
@@ -711,17 +792,28 @@ document.addEventListener("DOMContentLoaded", () => {
         const shareButton =
             post.querySelector(".share-btn");
 
+        const moreButton =
+            post.querySelector(".post-more");
+
         const commentInput =
-            post.querySelector(".comment-box input");
+            post.querySelector(
+                ".comment-box input"
+            );
 
         const likeCount =
-            post.querySelector(".like-count");
+            post.querySelector(
+                ".like-count"
+            );
 
         const commentCount =
-            post.querySelector(".comment-count");
+            post.querySelector(
+                ".comment-count"
+            );
 
 
-        /* LIKE */
+        /* =================================================
+           LIKE
+        ================================================= */
 
         if (likeButton) {
 
@@ -730,7 +822,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 () => {
 
                     const liked =
-                        likeButton.classList.toggle("liked");
+                        likeButton.classList.toggle(
+                            "liked"
+                        );
 
                     likeButton.innerHTML =
                         liked
@@ -761,7 +855,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        /* SAVE */
+        /* =================================================
+           SAVE
+        ================================================= */
 
         if (saveButton) {
 
@@ -770,8 +866,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 () => {
 
                     const saved =
-                        saveButton.classList.toggle("saved");
-
+                        saveButton.classList.toggle(
+                            "saved"
+                        );
 
                     showToast(
                         saved
@@ -786,7 +883,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        /* COMMENT BUTTON */
+        /* =================================================
+           COMMENT BUTTON
+        ================================================= */
 
         if (commentButton) {
 
@@ -794,16 +893,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 "click",
                 () => {
 
-                    if (commentInput) {
+                    if (!commentInput) return;
 
-                        commentInput.focus();
+                    commentInput.focus();
 
-                        commentInput.scrollIntoView({
-                            behavior: "smooth",
-                            block: "center"
-                        });
-
-                    }
+                    commentInput.scrollIntoView({
+                        behavior: "smooth",
+                        block: "center"
+                    });
 
                 }
             );
@@ -811,7 +908,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        /* SHARE */
+        /* =================================================
+           SHARE
+        ================================================= */
 
         if (shareButton) {
 
@@ -822,6 +921,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     const shareText =
                         "شاهد هذا المنشور على Connect";
 
+
                     if (
                         navigator.share
                     ) {
@@ -829,78 +929,633 @@ document.addEventListener("DOMContentLoaded", () => {
                         try {
 
                             await navigator.share({
-                                title: "Connect",
-                                text: shareText,
-                                url: window.location.href
-                            });
+                        or.share({
+    title: "Connect",
+    text: shareText,
+    url: window.location.href
+});
 
-                        } catch (error) {
+} catch (error) {
 
-                            if (
-                                error &&
-                                error.name !== "AbortError"
-                            ) {
-                                showToast(
-                                    "تعذر فتح المشاركة",
-                                    "⚠️"
-                                );
-                            }
+    if (
+        error &&
+        error.name !== "AbortError"
+    ) {
 
-                        }
+        showToast(
+            "تعذر فتح المشاركة",
+            "⚠️"
+        );
 
-                    } else {
+    }
 
-                        try {
+}
 
-                            await navigator.clipboard.writeText(
-                                window.location.href
-                            );
+} else {
 
-                            showToast(
-                                "تم نسخ رابط المنشور 🔗",
-                                "✓"
-                            );
+    try {
 
-                        } catch (error) {
+        if (navigator.clipboard) {
 
-                            showToast(
-                                "تم الضغط على المشاركة",
-                                "↗️"
-                            );
+            await navigator.clipboard.writeText(
+                window.location.href
+            );
 
-                        }
+            showToast(
+                "تم نسخ رابط المنشور 🔗",
+                "✓"
+            );
 
-                    }
+        } else {
 
-                }
+            showToast(
+                "تم الضغط على المشاركة",
+                "↗️"
             );
 
         }
 
+    } catch (error) {
 
-        /* COMMENT */
+        showToast(
+            "تم الضغط على المشاركة",
+            "↗️"
+        );
 
-        if (commentInput) {
+    }
 
-            commentInput.addEventListener(
-                "keydown",
-                event => {
+}
 
-                    if (
-                        event.key === "Enter" &&
-                        commentInput.value.trim()
-                    ) {
-
-                        event.preventDefault();
-
-                        const comment =
-                            commentInput.value.trim();
-
-                        commentInput.value = "";
+}
+);
+}
 
 
-                        if (commentCount) {
+/* =================================================
+   MORE
+================================================= */
 
-                            const current =
-                                parseInt(
-                                    commentCount.
+if (moreButton) {
+
+    moreButton.addEventListener(
+        "click",
+        () => {
+
+            showToast(
+                "المزيد من الخيارات ستتوفر قريباً",
+                "⋮"
+            );
+
+        }
+    );
+
+}
+
+
+/* =================================================
+   COMMENT SUBMIT
+================================================= */
+
+if (commentInput) {
+
+    commentInput.addEventListener(
+        "keydown",
+        event => {
+
+            if (event.key !== "Enter") {
+                return;
+            }
+
+            const comment =
+                commentInput.value.trim();
+
+            if (!comment) {
+                return;
+            }
+
+            event.preventDefault();
+
+            commentInput.value = "";
+
+            if (commentCount) {
+
+                const current =
+                    parseInt(
+                        commentCount.textContent
+                            .replace(/\D/g, ""),
+                        10
+                    ) || 0;
+
+                const newCount =
+                    current + 1;
+
+                commentCount.textContent =
+                    `${newCount} تعليق`;
+
+            }
+
+            showToast(
+                "تم إضافة تعليقك 💬",
+                "✓"
+            );
+
+        }
+    );
+
+}
+
+}
+
+
+/* =========================================================
+   EXISTING POSTS
+========================================================= */
+
+if (feed) {
+
+    const existingPosts =
+        feed.querySelectorAll(".post-card");
+
+    existingPosts.forEach(post => {
+        attachPostEvents(post);
+    });
+
+}
+
+
+/* =========================================================
+   THEME
+========================================================= */
+
+function setDarkMode(enabled) {
+
+    document.body.classList.toggle(
+        "dark-mode",
+        enabled
+    );
+
+    document.documentElement.classList.toggle(
+        "dark-mode",
+        enabled
+    );
+
+    if (darkModeToggle) {
+        darkModeToggle.checked = enabled;
+    }
+
+    if (darkModeSwitch) {
+        darkModeSwitch.checked = enabled;
+    }
+
+    localStorage.setItem(
+        "connect-dark-mode",
+        enabled ? "true" : "false"
+    );
+
+    showToast(
+        enabled
+            ? "تم تفعيل الوضع الليلي 🌙"
+            : "تم إيقاف الوضع الليلي ☀️",
+        enabled ? "🌙" : "☀️"
+    );
+
+}
+
+
+const savedDarkMode =
+    localStorage.getItem(
+        "connect-dark-mode"
+    ) === "true";
+
+
+document.body.classList.toggle(
+    "dark-mode",
+    savedDarkMode
+);
+
+document.documentElement.classList.toggle(
+    "dark-mode",
+    savedDarkMode
+);
+
+
+if (darkModeToggle) {
+
+    darkModeToggle.checked =
+        savedDarkMode;
+
+    darkModeToggle.addEventListener(
+        "change",
+        () => {
+
+            setDarkMode(
+                darkModeToggle.checked
+            );
+
+        }
+    );
+
+}
+
+
+if (darkModeSwitch) {
+
+    darkModeSwitch.checked =
+        savedDarkMode;
+
+    darkModeSwitch.addEventListener(
+        "change",
+        () => {
+
+            setDarkMode(
+                darkModeSwitch.checked
+            );
+
+        }
+    );
+
+}
+
+
+if (themeBtn) {
+
+    themeBtn.addEventListener(
+        "click",
+        () => {
+
+            const enabled =
+                !document.body.classList.contains(
+                    "dark-mode"
+                );
+
+            setDarkMode(enabled);
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   NOTIFICATIONS
+========================================================= */
+
+if (notificationBtn) {
+
+    notificationBtn.addEventListener(
+        "click",
+        event => {
+
+            event.stopPropagation();
+
+            if (!notificationPanel) {
+                return;
+            }
+
+            notificationPanel.classList.toggle(
+                "show"
+            );
+
+        }
+    );
+
+}
+
+
+if (closeNotificationPanel) {
+
+    closeNotificationPanel.addEventListener(
+        "click",
+        () => {
+
+            if (notificationPanel) {
+
+                notificationPanel.classList.remove(
+                    "show"
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+if (markNotifications) {
+
+    markNotifications.addEventListener(
+        "click",
+        () => {
+
+            const unread =
+                document.querySelectorAll(
+                    ".notification-item.unread"
+                );
+
+            unread.forEach(item => {
+                item.classList.remove("unread");
+            });
+
+            showToast(
+                "تم تحديد جميع الإشعارات كمقروءة",
+                "✓"
+            );
+
+        }
+    );
+
+}
+
+
+document.addEventListener(
+    "click",
+    event => {
+
+        if (!notificationPanel) {
+            return;
+        }
+
+        if (
+            notificationPanel.classList.contains("show") &&
+            !notificationPanel.contains(event.target) &&
+            !(
+                notificationBtn &&
+                notificationBtn.contains(event.target)
+            )
+        ) {
+
+            notificationPanel.classList.remove(
+                "show"
+            );
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+function searchPosts(input) {
+
+    if (!input || !feed) return;
+
+    const query =
+        input.value
+            .trim()
+            .toLowerCase();
+
+    const posts =
+        feed.querySelectorAll(".post-card");
+
+    posts.forEach(post => {
+
+        if (!query) {
+
+            post.style.display = "";
+
+            return;
+        }
+
+        const text =
+            post.textContent.toLowerCase();
+
+        post.style.display =
+            text.includes(query)
+                ? ""
+                : "none";
+
+    });
+
+}
+
+
+if (globalSearch) {
+
+    globalSearch.addEventListener(
+        "input",
+        () => {
+            searchPosts(globalSearch);
+        }
+    );
+
+}
+
+
+if (exploreSearch) {
+
+    exploreSearch.addEventListener(
+        "input",
+        () => {
+            searchPosts(exploreSearch);
+        }
+    );
+
+}
+
+
+/* =========================================================
+   STORIES
+========================================================= */
+
+if (viewAllStories) {
+
+    viewAllStories.addEventListener(
+        "click",
+        () => {
+
+            showToast(
+                "سيتم عرض جميع القصص قريباً",
+                "⭕"
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   FOLLOW BUTTONS
+========================================================= */
+
+function attachFollowEvents() {
+
+    const followButtons =
+        document.querySelectorAll(
+            ".follow-btn"
+        );
+
+    followButtons.forEach(button => {
+
+        if (
+            button.dataset.connected === "true"
+        ) {
+            return;
+        }
+
+        button.dataset.connected = "true";
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                const following =
+                    button.classList.toggle(
+                        "following"
+                    );
+
+                button.textContent =
+                    following
+                        ? "متابَع ✓"
+                        : "متابعة";
+
+                showToast(
+                    following
+                        ? "تمت المتابعة بنجاح ✓"
+                        : "تم إلغاء المتابعة",
+                    following ? "✓" : "−"
+                );
+
+            }
+        );
+
+    });
+
+}
+
+
+attachFollowEvents();
+
+
+/* =========================================================
+   PROFILE BUTTON
+========================================================= */
+
+const profileMiniBtn =
+    document.getElementById(
+        "profileMiniBtn"
+    );
+
+if (profileMiniBtn) {
+
+    profileMiniBtn.addEventListener(
+        "click",
+        () => {
+
+            openPage("profilePage");
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   EDIT PROFILE
+========================================================= */
+
+const editProfileBtn =
+    document.getElementById(
+        "editProfileBtn"
+    );
+
+if (editProfileBtn) {
+
+    editProfileBtn.addEventListener(
+        "click",
+        () => {
+
+            showToast(
+                "تعديل الملف الشخصي سيتوفر قريباً",
+                "✏️"
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   SETTINGS
+========================================================= */
+
+const secondaryButtons =
+    document.querySelectorAll(
+        ".settings-list .secondary-btn"
+    );
+
+secondaryButtons.forEach(button => {
+
+    button.addEventListener(
+        "click",
+        () => {
+
+            showToast(
+                "هذا الخيار سيتوفر قريباً",
+                "⚙️"
+            );
+
+        }
+    );
+
+});
+
+
+/* =========================================================
+   INITIAL PAGE
+========================================================= */
+
+let initialPage =
+    document.querySelector(
+        ".page.active"
+    );
+
+if (!initialPage) {
+
+    const homePage =
+        document.getElementById(
+            "homePage"
+        );
+
+    if (homePage) {
+
+        homePage.classList.add(
+            "active"
+        );
+
+        initialPage = homePage;
+
+    }
+
+}
+
+
+if (initialPage) {
+
+    navItems.forEach(item => {
+
+        item.classList.toggle(
+            "active",
+            item.dataset.page ===
+            initialPage.id
+        );
+
+    });
+
+}
+
+
+/* =========================================================
+   CONNECT READY
+========================================================= */
+
+console.log(
+    "CONNECT loaded successfully ✓"
+);
+
+});   

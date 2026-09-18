@@ -14,651 +14,934 @@
 
 <body>
 
-    <!-- ==================== APP ==================== -->
-    <div class="app">
+<div class="app">
 
-        <!-- ==================== TOP BAR ==================== -->
-        <header class="topbar">
+    <!-- ==================== TOP BAR ==================== -->
+    <header class="topbar">
 
-            <div class="topbar-left">
-                <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+        <div class="topbar-left">
+            <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
 
-                <div class="logo">
-                    <span class="logo-icon">✦</span>
-                    <span>Connect</span>
+            <div class="logo">
+                <span class="logo-icon">✦</span>
+                <span>Connect</span>
+            </div>
+        </div>
+
+        <div class="global-search">
+            <span>🔎</span>
+            <input
+                type="text"
+                id="globalSearch"
+                placeholder="ابحث في Connect..."
+            >
+        </div>
+
+        <div class="topbar-actions">
+
+            <button class="top-icon" id="themeBtn" title="الوضع الليلي">
+                🌙
+            </button>
+
+            <button class="top-icon" id="notificationBtn" title="الإشعارات">
+                🔔
+                <span class="notification-badge">3</span>
+            </button>
+
+            <button class="profile-mini-btn" id="profileMiniBtn">
+                <div class="mini-avatar">K</div>
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- ==================== MAIN LAYOUT ==================== -->
+    <div class="main-layout">
+
+        <!-- ==================== SIDEBAR ==================== -->
+        <aside class="sidebar" id="sidebar">
+
+            <div class="sidebar-profile">
+
+                <div class="profile-cover"></div>
+
+                <div class="profile-avatar">
+                    K
                 </div>
-            </div>
 
-            <div class="global-search">
-                <span>🔎</span>
-                <input
-                    type="text"
-                    id="globalSearch"
-                    placeholder="ابحث في Connect..."
-                >
-            </div>
-
-            <div class="topbar-actions">
-
-                <button class="top-icon" id="themeBtn" title="الوضع الليلي">
-                    🌙
-                </button>
-
-                <button class="top-icon" id="notificationBtn" title="الإشعارات">
-                    🔔
-                    <span class="notification-badge">3</span>
-                </button>
-
-                <button class="profile-mini-btn" id="profileMiniBtn">
-                    <div class="mini-avatar">K</div>
-                </button>
+                <div class="sidebar-profile-info">
+                    <h3>كـ Khalil</h3>
+                    <p>@khalil</p>
+                </div>
 
             </div>
 
-        </header>
+
+            <nav class="main-nav">
+
+                <button class="nav-item active" data-page="homePage">
+                    <span class="nav-icon">🏠</span>
+                    <span>الرئيسية</span>
+                </button>
+
+                <button class="nav-item" data-page="explorePage">
+                    <span class="nav-icon">🔎</span>
+                    <span>استكشاف</span>
+                </button>
+
+                <button class="nav-item" data-page="notificationsPage">
+                    <span class="nav-icon">🔔</span>
+                    <span>الإشعارات</span>
+                    <span class="nav-count">3</span>
+                </button>
+
+                <button class="nav-item" data-page="messagesPage">
+                    <span class="nav-icon">💬</span>
+                    <span>الرسائل</span>
+                </button>
+
+                <button class="nav-item" data-page="friendsPage">
+                    <span class="nav-icon">👥</span>
+                    <span>الأصدقاء</span>
+                </button>
+
+                <button class="nav-item" data-page="savedPage">
+                    <span class="nav-icon">🔖</span>
+                    <span>المحفوظات</span>
+                </button>
+
+                <button class="nav-item" data-page="profilePage">
+                    <span class="nav-icon">👤</span>
+                    <span>الملف الشخصي</span>
+                </button>
+
+                <button class="nav-item" data-page="settingsPage">
+                    <span class="nav-icon">⚙️</span>
+                    <span>الإعدادات</span>
+                </button>
+
+            </nav>
 
 
-        <!-- ==================== MAIN LAYOUT ==================== -->
-        <div class="main-layout">
+            <button class="side-create-post" id="sideCreatePost">
+                <span>＋</span>
+                إنشاء منشور
+            </button>
 
 
-            <!-- ==================== SIDEBAR ==================== -->
-            <aside class="sidebar" id="sidebar">
+            <div class="sidebar-footer">
+                <span>© 2026 Connect</span>
+            </div>
 
-                <div class="sidebar-profile">
+        </aside>
 
-                    <div class="profile-cover"></div>
 
-                    <div class="profile-avatar">
-                        K
+        <!-- ==================== CONTENT ==================== -->
+        <main class="content">
+
+
+            <!-- ==================== HOME ==================== -->
+            <section class="page active" id="homePage">
+
+                <div class="page-header">
+                    <div>
+                        <h1>الرئيسية</h1>
+                        <p>آخر المنشورات من الأشخاص الذين تتابعهم</p>
+                    </div>
+                </div>
+
+
+                <!-- STORIES -->
+                <div class="stories-section">
+
+                    <div class="story create-story" id="createStory">
+                        <div class="story-add">＋</div>
+                        <span>قصتك</span>
                     </div>
 
-                    <div class="sidebar-profile-info">
-                        <h3>كـ Khalil</h3>
+                    <div class="story">
+                        <div class="story-avatar">A</div>
+                        <span>Ahmed</span>
+                    </div>
+
+                    <div class="story">
+                        <div class="story-avatar">S</div>
+                        <span>Sarra</span>
+                    </div>
+
+                    <div class="story">
+                        <div class="story-avatar">M</div>
+                        <span>Mohamed</span>
+                    </div>
+
+                    <div class="story">
+                        <div class="story-avatar">F</div>
+                        <span>Fatma</span>
+                    </div>
+
+                    <button class="stories-next" id="viewAllStories">
+                        ›
+                    </button>
+
+                </div>
+
+
+                <!-- CREATE POST -->
+                <div class="create-post-card">
+
+                    <div class="create-post-top">
+
+                        <div class="user-avatar">
+                            K
+                        </div>
+
+                        <button class="create-input" id="openCreatePost">
+                            بماذا تفكر يا Khalil؟
+                        </button>
+
+                    </div>
+
+
+                    <div class="create-post-actions">
+
+                        <button id="photoPostBtn" class="create-action">
+                            📷
+                            <span>صورة</span>
+                        </button>
+
+                        <button id="feelingBtn" class="create-action">
+                            😊
+                            <span>شعور</span>
+                        </button>
+
+                        <button id="liveBtn" class="create-action">
+                            🔴
+                            <span>بث مباشر</span>
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- FEED -->
+                <div class="feed" id="feed">
+
+
+                    <!-- POST 1 -->
+                    <article class="post-card">
+
+                        <div class="post-header">
+
+                            <div class="post-author">
+
+                                <div class="post-avatar">A</div>
+
+                                <div>
+                                    <h3>Ahmed Mohamed</h3>
+                                    <span>منذ 25 دقيقة · 🌍</span>
+                                </div>
+
+                            </div>
+
+                            <button class="post-more">⋮</button>
+
+                        </div>
+
+
+                        <div class="post-content">
+                            <p>
+                                صباح الخير للجميع 🌅
+                                <br>
+                                يوم جديد، فرصة جديدة لتحقيق أهدافنا.
+                            </p>
+                        </div>
+
+
+                        <div class="post-stats">
+                            <span>❤️ 24 إعجاب</span>
+                            <span>8 تعليقات</span>
+                        </div>
+
+
+                        <div class="post-actions">
+
+                            <button class="post-action like-btn">
+                                ♡
+                                <span>إعجاب</span>
+                            </button>
+
+                            <button class="post-action comment-btn">
+                                💬
+                                <span>تعليق</span>
+                            </button>
+
+                            <button class="post-action share-btn">
+                                ↗️
+                                <span>مشاركة</span>
+                            </button>
+
+                            <button class="post-action save-btn">
+                                🔖
+                                <span>حفظ</span>
+                            </button>
+
+                        </div>
+
+
+                        <div class="comment-box">
+
+                            <div class="comment-avatar">K</div>
+
+                            <input
+                                type="text"
+                                placeholder="اكتب تعليقاً..."
+                            >
+
+                        </div>
+
+                    </article>
+
+
+                    <!-- POST 2 -->
+                    <article class="post-card">
+
+                        <div class="post-header">
+
+                            <div class="post-author">
+
+                                <div class="post-avatar">S</div>
+
+                                <div>
+                                    <h3>Sarra Hussein</h3>
+                                    <span>منذ ساعة · 📍 Tunis</span>
+                                </div>
+
+                            </div>
+
+                            <button class="post-more">⋮</button>
+
+                        </div>
+
+
+                        <div class="post-content">
+                            <p>
+                                شكون موجود اليوم؟ 👋
+                                <br>
+                                نحب نسمع أخباركم.
+                            </p>
+                        </div>
+
+
+                        <div class="post-stats">
+                            <span>❤️ 51 إعجاب</span>
+                            <span>14 تعليق</span>
+                        </div>
+
+
+                        <div class="post-actions">
+
+                            <button class="post-action like-btn">
+                                ♡
+                                <span>إعجاب</span>
+                            </button>
+
+                            <button class="post-action comment-btn">
+                                💬
+                                <span>تعليق</span>
+                            </button>
+
+                            <button class="post-action share-btn">
+                                ↗️
+                                <span>مشاركة</span>
+                            </button>
+
+                            <button class="post-action save-btn">
+                                🔖
+                                <span>حفظ</span>
+                            </button>
+
+                        </div>
+
+
+                        <div class="comment-box">
+
+                            <div class="comment-avatar">K</div>
+
+                            <input
+                                type="text"
+                                placeholder="اكتب تعليقاً..."
+                            >
+
+                        </div>
+
+                    </article>
+
+
+                    <!-- POST 3 -->
+                    <article class="post-card">
+
+                        <div class="post-header">
+
+                            <div class="post-author">
+
+                                <div class="post-avatar">M</div>
+
+                                <div>
+                                    <h3>Mohamed Ali</h3>
+                                    <span>منذ ساعتين · 🌍</span>
+                                </div>
+
+                            </div>
+
+                            <button class="post-more">⋮</button>
+
+                        </div>
+
+
+                        <div class="post-content">
+                            <p>
+                                اليوم تعلمت حاجة جديدة 🔥
+                                <br>
+                                أهم حاجة في أي مشروع هي إنك تبدأ.
+                            </p>
+                        </div>
+
+
+                        <div class="post-stats">
+                            <span>❤️ 37 إعجاب</span>
+                            <span>6 تعليقات</span>
+                        </div>
+
+
+                        <div class="post-actions">
+
+                            <button class="post-action like-btn">
+                                ♡
+                                <span>إعجاب</span>
+                            </button>
+
+                            <button class="post-action comment-btn">
+                                💬
+                                <span>تعليق</span>
+                            </button>
+
+                            <button class="post-action share-btn">
+                                ↗️
+                                <span>مشاركة</span>
+                            </button>
+
+                            <button class="post-action save-btn">
+                                🔖
+                                <span>حفظ</span>
+                            </button>
+
+                        </div>
+
+
+                        <div class="comment-box">
+
+                            <div class="comment-avatar">K</div>
+
+                            <input
+                                type="text"
+                                placeholder="اكتب تعليقاً..."
+                            >
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+
+            <!-- ==================== EXPLORE ==================== -->
+            <section class="page" id="explorePage">
+
+                <div class="page-header">
+                    <div>
+                        <h1>استكشاف 🔎</h1>
+                        <p>اكتشف أشخاصاً ومنشورات جديدة</p>
+                    </div>
+                </div>
+
+
+                <div class="explore-search">
+                    <span>🔎</span>
+
+                    <input
+                        type="text"
+                        id="exploreSearch"
+                        placeholder="ابحث عن أشخاص أو منشورات..."
+                    >
+                </div>
+
+
+                <div class="explore-grid">
+
+                    <div class="explore-card">
+                        <div class="explore-icon">🔥</div>
+                        <h3>الأكثر انتشاراً</h3>
+                        <p>اكتشف المحتوى الرائج الآن</p>
+                    </div>
+
+                    <div class="explore-card">
+                        <div class="explore-icon">👥</div>
+                        <h3>أشخاص جدد</h3>
+                        <p>اكتشف أشخاصاً قد تعرفهم</p>
+                    </div>
+
+                    <div class="explore-card">
+                        <div class="explore-icon">📸</div>
+                        <h3>صور</h3>
+                        <p>شاهد أحدث الصور</p>
+                    </div>
+
+                    <div class="explore-card">
+                        <div class="explore-icon">🎬</div>
+                        <h3>فيديوهات</h3>
+                        <p>شاهد الفيديوهات الجديدة</p>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- ==================== NOTIFICATIONS ==================== -->
+            <section class="page" id="notificationsPage">
+
+                <div class="page-header">
+
+                    <div>
+                        <h1>الإشعارات 🔔</h1>
+                        <p>كل جديد في حسابك</p>
+                    </div>
+
+                    <button class="secondary-btn" id="markNotifications">
+                        تحديد الكل كمقروء
+                    </button>
+
+                </div>
+
+
+                <div class="notifications-list">
+
+                    <div class="notification-item unread">
+
+                        <div class="notification-icon">❤️</div>
+
+                        <div>
+                            <strong>Ahmed Mohamed</strong>
+                            أعجب بمنشورك.
+                            <span>منذ 5 دقائق</span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="notification-item unread">
+
+                        <div class="notification-icon">👤</div>
+
+                        <div>
+                            <strong>Sarra Hussein</strong>
+                            بدأت بمتابعتك.
+                            <span>منذ 20 دقيقة</span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="notification-item unread">
+
+                        <div class="notification-icon">💬</div>
+
+                        <div>
+                            <strong>Mohamed Ali</strong>
+                            علّق على منشورك.
+                            <span>منذ ساعة</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- ==================== MESSAGES ==================== -->
+            <section class="page" id="messagesPage">
+
+                <div class="page-header">
+                    <div>
+                        <h1>الرسائل 💬</h1>
+                        <p>محادثاتك الأخيرة</p>
+                    </div>
+                </div>
+
+
+                <div class="messages-list">
+
+                    <button class="message-item">
+
+                        <div class="message-avatar">A</div>
+
+                        <div class="message-info">
+                            <strong>Ahmed Mohamed</strong>
+                            <span>صباح الخير 👋</span>
+                        </div>
+
+                        <small>10:25</small>
+
+                    </button>
+
+
+                    <button class="message-item">
+
+                        <div class="message-avatar">S</div>
+
+                        <div class="message-info">
+                            <strong>Sarra Hussein</strong>
+                            <span>شكون موجود اليوم؟</span>
+                        </div>
+
+                        <small>09:50</small>
+
+                    </button>
+
+
+                    <button class="message-item">
+
+                        <div class="message-avatar">M</div>
+
+                        <div class="message-info">
+                            <strong>Mohamed Ali</strong>
+                            <span>شوف هذا 🔥</span>
+                        </div>
+
+                        <small>أمس</small>
+
+                    </button>
+
+                </div>
+
+            </section>
+
+
+            <!-- ==================== FRIENDS ==================== -->
+            <section class="page" id="friendsPage">
+
+                <div class="page-header">
+                    <div>
+                        <h1>الأصدقاء 👥</h1>
+                        <p>الأشخاص الذين تتواصل معهم</p>
+                    </div>
+                </div>
+
+
+                <div class="friends-grid">
+
+                    <div class="friend-card">
+
+                        <div class="friend-avatar">A</div>
+
+                        <h3>Ahmed Mohamed</h3>
+                        <p>@ahmed</p>
+
+                        <button class="primary-btn follow-btn">
+                            متابعة
+                        </button>
+
+                    </div>
+
+
+                    <div class="friend-card">
+
+                        <div class="friend-avatar">S</div>
+
+                        <h3>Sarra Hussein</h3>
+                        <p>@sarra</p>
+
+                        <button class="primary-btn follow-btn">
+                            متابعة
+                        </button>
+
+                    </div>
+
+
+                    <div class="friend-card">
+
+                        <div class="friend-avatar">M</div>
+
+                        <h3>Mohamed Ali</h3>
+                        <p>@mohamed</p>
+
+                        <button class="primary-btn follow-btn">
+                            متابعة
+                        </button>
+
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- Saved Page -->
+            <section class="page" id="savedPage">
+                <div class="page-header">
+                    <div>
+                        <h1>المحفوظات</h1>
+                        <p>المنشورات التي حفظتها</p>
+                    </div>
+                </div>
+
+                <div class="saved-content" id="savedPosts">
+                    <div class="empty-state">
+                        <div class="empty-icon">🔖</div>
+                        <h3>لا توجد منشورات محفوظة</h3>
+                        <p>المنشورات التي تحفظها ستظهر هنا</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Profile Page -->
+            <section class="page" id="profilePage">
+                <div class="profile-cover"></div>
+
+                <div class="profile-info">
+                    <div class="profile-avatar-large">K</div>
+
+                    <div class="profile-main-info">
+                        <h1>Khalil</h1>
                         <p>@khalil</p>
+                        <p class="profile-bio">
+                            مرحباً بكم في Connect 👋
+                        </p>
+                    </div>
+
+                    <button class="primary-btn" id="editProfileBtn">
+                        تعديل الملف الشخصي
+                    </button>
+                </div>
+
+                <div class="profile-stats">
+                    <div>
+                        <strong>24</strong>
+                        <span>منشور</span>
+                    </div>
+
+                    <div>
+                        <strong>156</strong>
+                        <span>متابع</span>
+                    </div>
+
+                    <div>
+                        <strong>89</strong>
+                        <span>يتابع</span>
+                    </div>
+                </div>
+
+                <div class="profile-posts">
+                    <h2>منشوراتي</h2>
+                    <div id="profileFeed"></div>
+                </div>
+            </section>
+
+            <!-- Settings Page -->
+            <section class="page" id="settingsPage">
+                <div class="page-header">
+                    <div>
+                        <h1>الإعدادات</h1>
+                        <p>تحكم في إعدادات حسابك</p>
+                    </div>
+                </div>
+
+                <div class="settings-list">
+
+                    <div class="setting-card">
+                        <div>
+                            <h3>الوضع الليلي</h3>
+                            <p>تفعيل المظهر الداكن</p>
+                        </div>
+
+                        <label class="switch">
+                            <input type="checkbox" id="darkModeToggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-card">
+                        <div>
+                            <h3>الإشعارات</h3>
+                            <p>السماح بإشعارات Connect</p>
+                        </div>
+
+                        <label class="switch">
+                            <input type="checkbox" id="notificationsToggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-card">
+                        <div>
+                            <h3>الخصوصية</h3>
+                            <p>إدارة إعدادات الخصوصية</p>
+                        </div>
+
+                        <button class="secondary-btn">
+                            إدارة
+                        </button>
+                    </div>
+
+                    <div class="setting-card">
+                        <div>
+                            <h3>الأمان</h3>
+                            <p>كلمة المرور وتسجيل الدخول</p>
+                        </div>
+
+                        <button class="secondary-btn">
+                            إدارة
+                        </button>
                     </div>
 
                 </div>
+            </section>
 
+        </main>
+    </div>
 
-                <!-- Navigation -->
-                <nav class="main-nav">
+    <!-- Create Post Modal -->
+    <div class="modal-overlay" id="modalOverlay">
 
-                    <button
-                        class="nav-item active"
-                        data-page="homePage"
-                    >
-                        <span class="nav-icon">🏠</span>
-                        <span>الرئيسية</span>
-                    </button>
+        <div class="post-modal" id="postModal">
 
+            <div class="modal-header">
+                <h2>إنشاء منشور</h2>
 
-                    <button
-                        class="nav-item"
-                        data-page="explorePage"
-                    >
-                        <span class="nav-icon">🔎</span>
-                        <span>استكشاف</span>
-                    </button>
+                <button class="close-modal" id="closePostModal">
+                    ✕
+                </button>
+            </div>
 
+            <div class="modal-user">
+                <div class="user-avatar">K</div>
 
-                    <button
-                        class="nav-item"
-                        data-page="notificationsPage"
-                    >
-                        <span class="nav-icon">🔔</span>
-                        <span>الإشعارات</span>
-                        <span class="nav-count">3</span>
-                    </button>
+                <div>
+                    <strong>Khalil</strong>
+                    <span>نشر للعامة 🌎</span>
+                </div>
+            </div>
 
+            <textarea
+                id="postText"
+                placeholder="بماذا تفكر؟"
+                rows="6"
+            ></textarea>
 
-                    <button
-                        class="nav-item"
-                        data-page="messagesPage"
-                    >
-                        <span class="nav-icon">💬</span>
-                        <span>الرسائل</span>
-                    </button>
+            <div class="selected-image-container" id="selectedImageContainer">
+                <img id="selectedImage" src="" alt="">
+            </div>
 
+            <div class="modal-actions">
 
-                    <button
-                        class="nav-item"
-                        data-page="friendsPage"
-                    >
-                        <span class="nav-icon">👥</span>
-                        <span>الأصدقاء</span>
-                    </button>
-
-
-                    <button
-                        class="nav-item"
-                        data-page="savedPage"
-                    >
-                        <span class="nav-icon">🔖</span>
-                        <span>المحفوظات</span>
-                    </button>
-
-
-                    <button
-                        class="nav-item"
-                        data-page="profilePage"
-                    >
-                        <span class="nav-icon">👤</span>
-                        <span>الملف الشخصي</span>
-                    </button>
-
-
-                    <button
-                        class="nav-item"
-                        data-page="settingsPage"
-                    >
-                        <span class="nav-icon">⚙️</span>
-                        <span>الإعدادات</span>
-                    </button>
-
-                </nav>
-
-
-                <!-- Create post -->
-                <button
-                    class="side-create-post"
-                    id="sideCreatePost"
-                >
-                    <span>＋</span>
-                    إنشاء منشور
+                <button id="modalPhotoBtn">
+                    📷 صورة
                 </button>
 
+                <button id="modalFeelingBtn">
+                    😊 شعور
+                </button>
 
-                <div class="sidebar-footer">
-                    <span>© 2026 Connect</span>
+                <button id="modalLocationBtn">
+                    📍 موقع
+                </button>
+
+            </div>
+
+            <input
+                type="file"
+                id="imageInput"
+                accept="image/*"
+                hidden
+            >
+
+            <button class="publish-btn" id="publishPost">
+                نشر المنشور
+            </button>
+
+        </div>
+    </div>
+
+    <!-- Notification Panel -->
+    <div class="notification-panel" id="notificationPanel">
+
+        <div class="notification-panel-header">
+            <h2>الإشعارات</h2>
+
+            <button id="closeNotificationPanel">
+                ✕
+            </button>
+        </div>
+
+        <div class="notification-list">
+
+            <div class="notification-item unread">
+                <div class="notification-avatar">M</div>
+
+                <div>
+                    <strong>Mohamed Ali</strong>
+                    <p>أعجب بمنشورك</p>
+                    <small>منذ 5 دقائق</small>
                 </div>
+            </div>
 
-            </aside>
+            <div class="notification-item">
+                <div class="notification-avatar">S</div>
 
+                <div>
+                    <strong>Sarah</strong>
+                    <p>بدأت بمتابعتك</p>
+                    <small>منذ ساعة</small>
+                </div>
+            </div>
 
+            <div class="notification-item">
+                <div class="notification-avatar">A</div>
 
-            <!-- ==================== CONTENT ==================== -->
-            <main class="content">
+                <div>
+                    <strong>Ahmed</strong>
+                    <p>علق على منشورك</p>
+                    <small>منذ ساعتين</small>
+                </div>
+            </div>
 
+        </div>
 
-                <!-- ==================== HOME ==================== -->
-                <section
-                    class="page active"
-                    id="homePage"
-                >
+        <button class="mark-notifications" id="markNotifications">
+            تحديد الكل كمقروء
+        </button>
 
-                    <div class="page-header">
-                        <div>
-                            <h1>الرئيسية</h1>
-                            <p>آخر المنشورات من الأشخاص الذين تتابعهم</p>
-                        </div>
-                    </div>
+    </div>
 
+    <!-- Toast -->
+    <div class="toast" id="toast">
 
-                    <!-- Stories -->
-                    <div class="stories-section">
+        <div class="toast-icon" id="toastIcon">
+            ✓
+        </div>
 
-                        <div
-                            class="story create-story"
-                            id="createStory"
-                        >
-                            <div class="story-add">＋</div>
-                            <span>قصتك</span>
-                        </div>
+        <div class="toast-text" id="toastText">
+            تم بنجاح
+        </div>
 
+    </div>
 
-                        <div class="story">
-                            <div class="story-avatar">A</div>
-                            <span>Ahmed</span>
-                        </div>
+    <script src="script.js"></script>
 
-
-                        <div class="story">
-                            <div class="story-avatar">S</div>
-                            <span>Sarra</span>
-                        </div>
-
-
-                        <div class="story">
-                            <div class="story-avatar">M</div>
-                            <span>Mohamed</span>
-                        </div>
-
-
-                        <div class="story">
-                            <div class="story-avatar">F</div>
-                            <span>Fatma</span>
-                        </div>
-
-
-                        <button
-                            class="stories-next"
-                            id="viewAllStories"
-                        >
-                            ›
-                        </button>
-
-                    </div>
-
-
-                    <!-- Create post -->
-                    <div class="create-post-card">
-
-                        <div class="create-post-top">
-
-                            <div class="user-avatar">
-                                K
-                            </div>
-
-                            <button
-                                class="create-input"
-                                id="openCreatePost"
-                            >
-                                بماذا تفكر يا Khalil؟
-                            </button>
-
-                        </div>
-
-
-                        <div class="create-post-actions">
-
-                            <button
-                                id="photoPostBtn"
-                                class="create-action"
-                            >
-                                📷
-                                <span>صورة</span>
-                            </button>
-
-
-                            <button
-                                id="feelingBtn"
-                                class="create-action"
-                            >
-                                😊
-                                <span>شعور</span>
-                            </button>
-
-
-                            <button
-                                id="liveBtn"
-                                class="create-action"
-                            >
-                                🔴
-                                <span>بث مباشر</span>
-                            </button>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- Feed -->
-                    <div
-                        class="feed"
-                        id="feed"
-                    >
-
-
-                        <!-- POST 1 -->
-                        <article class="post-card">
-
-                            <div class="post-header">
-
-                                <div class="post-author">
-
-                                    <div class="post-avatar">
-                                        A
-                                    </div>
-
-                                    <div>
-                                        <h3>Ahmed Mohamed</h3>
-                                        <span>منذ 25 دقيقة · 🌍</span>
-                                    </div>
-
-                                </div>
-
-
-                                <button class="post-more">
-                                    ⋮
-                                </button>
-
-                            </div>
-
-
-                            <div class="post-content">
-
-                                <p>
-                                    صباح الخير للجميع 🌅
-                                    <br>
-                                    يوم جديد، فرصة جديدة لتحقيق أهدافنا.
-                                </p>
-
-                            </div>
-
-
-                            <div class="post-stats">
-                                <span>❤️ 24 إعجاب</span>
-                                <span>8 تعليقات</span>
-                            </div>
-
-
-                            <div class="post-actions">
-
-                                <button class="post-action like-btn">
-                                    ♡
-                                    <span>إعجاب</span>
-                                </button>
-
-                                <button class="post-action">
-                                    💬
-                                    <span>تعليق</span>
-                                </button>
-
-                                <button class="post-action">
-                                    ↗️
-                                    <span>مشاركة</span>
-                                </button>
-
-                                <button class="post-action save-btn">
-                                    🔖
-                                    <span>حفظ</span>
-                                </button>
-
-                            </div>
-
-
-                            <div class="comment-box">
-
-                                <div class="comment-avatar">
-                                    K
-                                </div>
-
-                                <input
-                                    type="text"
-                                    placeholder="اكتب تعليقاً..."
-                                >
-
-                            </div>
-
-                        </article>
-
-
-
-                        <!-- POST 2 -->
-                        <article class="post-card">
-
-                            <div class="post-header">
-
-                                <div class="post-author">
-
-                                    <div class="post-avatar">
-                                        S
-                                    </div>
-
-                                    <div>
-                                        <h3>Sarra Hussein</h3>
-                                        <span>منذ ساعة · 📍 Tunis</span>
-                                    </div>
-
-                                </div>
-
-
-                                <button class="post-more">
-                                    ⋮
-                                </button>
-
-                            </div>
-
-
-                            <div class="post-content">
-
-                                <p>
-                                    شكون موجود اليوم؟ 👋
-                                    <br>
-                                    نحب نسمع أخباركم.
-                                </p>
-
-                            </div>
-
-
-                            <div class="post-stats">
-                                <span>❤️ 51 إعجاب</span>
-                                <span>14 تعليق</span>
-                            </div>
-
-
-                            <div class="post-actions">
-
-                                <button class="post-action like-btn">
-                                    ♡
-                                    <span>إعجاب</span>
-                                </button>
-
-                                <button class="post-action">
-                                    💬
-                                    <span>تعليق</span>
-                                </button>
-
-                                <button class="post-action">
-                                    ↗️
-                                    <span>مشاركة</span>
-                                </button>
-
-                                <button class="post-action save-btn">
-                                    🔖
-                                    <span>حفظ</span>
-                                </button>
-
-                            </div>
-
-
-                            <div class="comment-box">
-
-                                <div class="comment-avatar">
-                                    K
-                                </div>
-
-                                <input
-                                    type="text"
-                                    placeholder="اكتب تعليقاً..."
-                                >
-
-                            </div>
-
-                        </article>
-
-
-
-                        <!-- POST 3 -->
-                        <article class="post-card">
-
-                            <div class="post-header">
-
-                                <div class="post-author">
-
-                                    <div class="post-avatar">
-                                        M
-                                    </div>
-
-                                    <div>
-                                        <h3>Mohamed Ali</h3>
-                                        <span>منذ 2 ساعات · 🌍</span>
-                                    </div>
-
-                                </div>
-
-
-                                <button class="post-more">
-                                    ⋮
-                                </button>
-
-                            </div>
-
-
-                            <div class="post-content">
-
-                                <p>
-                                    اليوم تعلمت حاجة جديدة 🔥
-                                    <br>
-                                    أهم حاجة في أي مشروع هي إنك تبدأ.
-                                </p>
-
-                            </div>
-
-
-                            <div class="post-stats">
-                                <span>❤️ 37 إعجاب</span>
-                                <span>6 تعليقات</span>
-                            </div>
-
-
-                            <div class="post-actions">
-
-                                <button class="post-action like-btn">
-                                    ♡
-                                    <span>إعجاب</span>
-                                </button>
-
-                                <button class="post-action">
-                                    💬
-                                    <span>تعليق</span>
-                                </button>
-
-                                <button class="post-action">
-                                    ↗️
-                                    <span>مشاركة</span>
-                                </button>
-
-                                <button class="post-action save-btn">
-                                    🔖
-                                    <span>حفظ</span>
-                                </button>
-
-                            </div>
-
-
-                            <div class="comment-box">
-
-                                <div class="comment-avatar">
-                                    K
-                                </div>
-
-                                <input
-                                    type="text"
-                                    placeholder="اكتب تعليقاً..."
-                                >
-
-                            </div>
-
-                        </article>
-
-
-                    </div>
-
-                </section>
-
-
-
-                <!-- ==================== EXPLORE ==================== -->
-                <section
-                    class="page"
-                    id="explorePage"
-                >
-
-                    <div class="page-header">
-                        <div>
-                            <h1>استكشاف 🔎</h1>
-                            <p>اكتشف أشخاصاً ومنشورات جديدة</p>
-                        </div>
-                    </div>
-
-
-                    <div class="explore-search">
-
-                        <span>🔎</span>
-
-                        <input
-                            type="text"
-                            id="exploreSearch"
-                            placeholder="ابحث عن أشخاص أو منشورات..."
-                        >
-
-                    </div>
-
-
-                    <div class="explore-grid">
-
-                        <div class="explore-card">
-                            <div class="explore-icon">🔥</div>
-                            <h3>الأكثر انتشاراً</h3>
-                            <p>اكتشف المحتوى الرائج الآن</p>
-                        </div>
-
-                        <div class="explore-card">
-                            <div class="explore-icon">👥</div>
-                            <h3>أشخاص جدد</h3>
-                            <p>اكتشف أشخاصاً قد تعرفهم</p>
-                        </div>
-
-                        <div class="explore-card">
-                            <div class="explore-icon">📸</div>
-                            <h3>صور</h3>
-                            <p>شاهد أحدث الصور</p>
-                        </div>
-
-                        <div class="explore-card">
-                            <div class="explore-icon">🎬</div>
-                            <h3>فيديوهات</h3>
-                            <p>شاهد الفيديوهات الجديدة</p>
-                        </div>
-
-                    </div>
-
-                </section>
-
-
-
-                <!-- ==================== NOTIFICATIONS ==================== -->
-                <section
-                    class="page"
-                    id="notificationsPage"
-                >
-
-                    <div class="page-header">
-
-                        <div>
-                            <h1>الإشعارات 🔔</h1>
-                            <p>كل جديد في حسابك</p>
-                        </div>
-
-                        <button
-                            class="secondary-btn"
-                            id="markNotifications"
-                        >
-                            تحديد الكل كمقروء
-                        </button>
-
-                    </div>
-
-
-                    <div class="notifications-list">
-
-                        <div class="notification-item unread">
-
-                            <div class="notification-icon">
-                                ❤️
-                            </div>
-
-                            <div>
-                                <strong>Ahmed Mohamed</strong>
-                                أعجب بمنشورك.
-                                <span>منذ 5 دقائق</span>
-                            </div>
-
-                        </div>
-
-
-                        <div class="notification-item unread">
-
-                            <div class="notification-ico
+</body>
+                </html>
+    
